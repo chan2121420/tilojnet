@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+            {% for slide in hero_slides %}
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for slide in hero_slides %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{{ slide.image.url }}'); background-size: cover; background-position: center;">
+                    <div class="container">
+                        <div class="row align-items-center" style="min-height: 100vh;">
+                            <div class="col-lg-7" data-aos="fade-right">
+                                <h1 class="display-3 text-white fw-bold mb-4">{{ slide.title }}</h1>
+                                <p class="lead text-white mb-5">{{ slide.subtitle }}</p>
+                                <a href="{{ slide.cta_link }}" class="btn btn-primary-custom btn-lg">{{ slide.cta_text }} <i class="fas fa-arrow-right ms-2"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<section class="py-5" style="background: var(--bg-light); margin-top: -50px; position: relative; z-index: 1;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card text-center p-4 bg-white rounded-4 h-100 shadow-sm">
+                    <div class="icon-wrapper mb-3"><i class="fas fa-paint-brush fa-3x" style="color: var(--primary);"></i></div>
+                    <h4>Creative Design</h4>
+                    <p class="text-muted">Innovative designs tailored to your vision</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card text-center p-4 bg-white rounded-4 h-100 shadow-sm">
+                    <div class="icon-wrapper mb-3"><i class="fas fa-users fa-3x" style="color: var(--primary);"></i></div>
+                    <h4>Expert Team</h4>
+                    <p class="text-muted">Experienced professionals dedicated to excellence</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card text-center p-4 bg-white rounded-4 h-100 shadow-sm">
+                    <div class="icon-wrapper mb-3"><i class="fas fa-award fa-3x" style="color: var(--primary);"></i></div>
+                    <h4>Quality Guarantee</h4>
+                    <p class="text-muted">Premium materials and superior craftsmanship</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right">
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800" alt="About" class="img-fluid rounded-4 shadow-lg">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left">
+                <span class="badge bg-warning text-dark mb-3 px-3 py-2">ABOUT US</span>
+                <h2 class="section-title mb-4">Transforming Spaces, Creating Dreams</h2>
+                <p class="text-muted mb-4">At Tilojnet Exclusive, we believe every space tells a story. Our expert team combines creativity, functionality, and your vision to create stunning environments.</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle fa-2x text-success me-3"></i>
+                            <div><h5 class="mb-0">100+</h5><small class="text-muted">Projects</small></div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-smile fa-2x text-warning me-3"></i>
+                            <div><h5 class="mb-0">95%</h5><small class="text-muted">Satisfaction</small></div>
+                        </div>
+                    </div>
+                </div>
+                <a href="{% url 'about' %}" class="btn btn-primary-custom">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="badge bg-warning text-dark mb-3 px-3 py-2">OUR SPECIALTIES</span>
+            <h2 class="section-title d-inline-block">Browse By Category</h2>
+            <p class="text-muted mt-3">Explore our range of interior design solutions</p>
+        </div>
+        <div class="row g-4">
+            {% for category in featured_categories %}
+            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                <div class="category-card bg-white rounded-4 overflow-hidden shadow-sm h-100">
+                    <div class="category-image" style="height: 250px; overflow: hidden;">
+                        <img src="{{ category.featured_image.url }}" alt="{{ category.name }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.5s;">
+                    </div>
+                    <div class="p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="category-icon bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                    <i class="fas {{ category.icon }} fa-lg" style="color: var(--primary);"></i>
+                                </div>
+                                <h4 class="mb-0">{{ category.name }}</h4>
+                            </div>
+                            <span class="badge bg-warning text-dark">{{ category.item_count }}</span>
+                        </div>
+                        <p class="text-muted mb-4">{{ category.description|truncatewords:15 }}</p>
+                        <a href="{% url 'category_detail' category.slug %}" class="btn btn-outline-primary rounded-pill w-100">Explore {{ category.name }} <i class="fas fa-arrow-right ms-2"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'categories_list' %}" class="btn btn-primary-custom btn-lg">View All Categories</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h3 class="mb-4">All Our Design Categories</h3>
+        </div>
+        <div class="row g-3">
+            {% for cat in all_categories_preview %}
+            <div class="col-lg-3 col-md-4 col-6" data-aos="zoom-in">
+                <a href="{% url 'category_detail' cat.slug %}" class="text-decoration-none">
+                    <div class="quick-cat-card bg-white rounded-3 p-4 text-center shadow-sm h-100" style="transition: all 0.3s ease;">
+                        <i class="fas {{ cat.icon }} fa-3x mb-3" style="color: var(--primary);"></i>
+                        <h6 class="mb-2">{{ cat.name }}</h6>
+                        <small class="text-muted">{{ cat.item_count }} options</small>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="badge bg-warning text-dark mb-3 px-3 py-2">OUR PORTFOLIO</span>
+            <h2 class="section-title d-inline-block">Featured Projects</h2>
+        </div>
+        <div class="row g-4">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6" data-aos="zoom-in">
+                <div class="project-card rounded-4 overflow-hidden shadow-lg position-relative">
+                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-100" style="height: 350px; object-fit: cover;">
+                    <div class="project-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: opacity 0.3s;">
+                        <div class="text-white w-100">
+                            <span class="badge bg-warning text-dark mb-2">{{ project.category.name }}</span>
+                            <h4 class="text-white">{{ project.title }}</h4>
+                            <p class="mb-3">{{ project.location }}</p>
+                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-sm btn-light">View Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'projects_list' %}" class="btn btn-primary-custom btn-lg">View Full Portfolio</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5" style="background: linear-gradient(135deg, var(--secondary), var(--text-dark));">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="badge bg-warning text-dark mb-3 px-3 py-2">TESTIMONIALS</span>
+            <h2 class="section-title d-inline-block text-white">What Our Clients Say</h2>
+        </div>
+        <div class="row g-4">
+            {% for testimonial in testimonials %}
+            <div class="col-md-4" data-aos="fade-up">
+                <div class="testimonial-card bg-white rounded-4 p-4 h-100">
+                    <div class="stars mb-3">
+                        {% for i in "12345" %}{% if forloop.counter <= testimonial.rating %}<i class="fas fa-star" style="color: #FCD34D;"></i>{% else %}<i class="far fa-star" style="color: #FCD34D;"></i>{% endif %}{% endfor %}
+                    </div>
+                    <p class="text-muted mb-4">"{{ testimonial.testimonial_text }}"</p>
+                    <div class="d-flex align-items-center">
+                        {% if testimonial.client_image %}<img src="{{ testimonial.client_image.url }}" alt="{{ testimonial.client_name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">{% else %}<div class="rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--primary); color: white; font-weight: bold;">{{ testimonial.client_name.0 }}</div>{% endif %}
+                        <div><h6 class="mb-0">{{ testimonial.client_name }}</h6><small class="text-muted">{{ testimonial.client_position }}</small></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="cta-box rounded-4 p-5 text-center" style="background: linear-gradient(135deg, var(--primary), var(--accent));" data-aos="zoom-in">
+            <h2 class="text-white mb-4">Ready to Transform Your Space?</h2>
+            <p class="text-white mb-4 lead">Let's create something amazing together!</p>
+            <a href="{% url 'quote_request' %}" class="btn btn-light btn-lg px-5">Get Free Quote <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<style>
+.category-card:hover .category-image img { transform: scale(1.1); }
+.quick-cat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important; }
+.project-card:hover .project-overlay { opacity: 1 !important; }
+</style>
+{% endblock %}

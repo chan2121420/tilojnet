@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ item.name }} - {{ category.name }} - Tilojnet Exclusive{% endblock %}
+
+{% block content %}
+<!-- Item Header -->
+<section style="margin-top: 76px; padding: 40px 0; background: var(--bg-light);">
+    <div class="container">
+        <nav aria-label="breadcrumb" data-aos="fade-right">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'categories_list' %}">Categories</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
+                <li class="breadcrumb-item active">{{ item.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Item Details -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Image Gallery -->
+            <div class="col-lg-7">
+                <div class="sticky-top" style="top: 100px;">
+                    <!-- Main Image -->
+                    <div class="main-image mb-3 rounded-4 overflow-hidden shadow-lg" data-aos="zoom-in">
+                        <img id="mainImage" src="{{ item.featured_image.url }}" alt="{{ item.name }}" 
+                             class="w-100" style="height: 500px; object-fit: cover;">
+                    </div>
+                    
+                    <!-- Gallery Thumbnails -->
+                    {% if item.gallery.all %}
+                    <div class="row g-2">
+                        <div class="col-3">
+                            <div class="gallery-thumb rounded-3 overflow-hidden cursor-pointer" 
+                                 onclick="changeImage('{{ item.featured_image.url }}')">
+                                <img src="{{ item.featured_image.url }}" alt="{{ item.name }}" 
+                                     class="w-100 h-100 object-fit-cover" style="height: 100px;">
+                            </div>
+                        </div>
+                        {% for img in item.gallery.all %}
+                        <div class="col-3">
+                            <div class="gallery-thumb rounded-3 overflow-hidden cursor-pointer" 
+                                 onclick="changeImage('{{ img.image.url }}')">
+                                <img src="{{ img.image.url }}" alt="{{ img.caption }}" 
+                                     class="w-100 h-100 object-fit-cover" style="height: 100px;">
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Item Information -->
+            <div class="col-lg-5">
+                <div data-aos="fade-left">
+                    <!-- Category Badge -->
+                    <a href="{% url 'category_detail' category.slug %}" 
+                       class="badge bg-primary text-white mb-3 px-3 py-2 text-decoration-none">
+                        <i class="fas {{ category.icon }} me-2"></i> {{ category.name }}
+                    </a>
+                    
+                    <!-- Badges -->
+                    <div class="mb-3">
+                        {% if item.is_new %}
+                        <span class="badge bg-success me-2">
+                            <i class="fas fa-star me-1"></i> New
+                        </span>
+                        {% endif %}
+                        {% if item.is_popular %}
+                        <span class="badge bg-danger">
+                            <i class="fas fa-fire me-1"></i> Popular Choice
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Title -->
+                    <h1 class="display-5 mb-4">{{ item.name }}</h1>
+                    
+                    <!-- Short Description -->
+                    <p class="lead text-muted mb-4">{{ item.short_description }}</p>
+                    
+                    <!-- Info Cards -->
+                    <div class="row g-3 mb-4">
+                        {% if item.price_range %}
+                        <div class="col-6">
+                            <div class="info-card bg-light rounded-3 p-3">
+                                <i class="fas fa-dollar-sign text-success fa-2x mb-2"></i>
+                                <p class="mb-0 small text-muted">Price Range</p>
+                                <h5 class="mb-0">{{ item.price_range }}</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if item.duration %}
+                        <div class="col-6">
+                            <div class="info-card bg-light rounded-3 p-3">
+                                <i class="fas fa-clock text-primary fa-2x mb-2"></i>
+                                <p class="mb-0 small text-muted">Duration</p>
+                                <h5 class="mb-0">{{ item.duration }}</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if item.ideal_space_size %}
+                        <div class="col-12">
+                            <div class="info-card bg-light rounded-3 p-3">
+                                <i class="fas fa-ruler-combined text-warning fa-2x mb-2"></i>
+                                <p class="mb-0 small text-muted">Ideal Space Size</p>
+                                <h5 class="mb-0">{{ item.ideal_space_size }}</h5>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Design Styles -->
+                    {% if item.design_styles %}
+                    <div class="mb-4">
+                        <h6 class="mb-3">Design Styles:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for style in item.design_styles %}
+                            <span class="badge bg-light text-dark border px-3 py-2">
+                                <i class="fas fa-palette me-2"></i> {{ style }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Key Features -->
+                    {% if item.key_features %}
+                    <div class="mb-4">
+                        <h6 class="mb-3">Key Features:</h6>
+                        <ul class="list-unstyled">
+                            {% for feature in item.key_features %}
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i> {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Materials -->
+                    {% if item.materials_used %}
+                    <div class="mb-4">
+                        <h6 class="mb-3">Materials Used:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for material in item.materials_used %}
+                            <span class="badge bg-secondary px-3 py-2">{{ material }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- CTA Buttons -->
+                    <div class="d-grid gap-3 mb-4">
+                        <a href="{% url 'quote_request' %}" class="btn btn-primary-custom btn-lg">
+                            <i class="fas fa-clipboard me-2"></i> Request Quote for This Design
+                        </a>
+                        <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-phone me-2"></i> Talk to Our Experts
+                        </a>
+                    </div>
+                    
+                    <!-- Share -->
+                    <div class="border-top pt-3">
+                        <p class="mb-2 small text-muted">Share this design:</p>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="btn btn-sm btn-outline-primary rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-outline-info rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-outline-success rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 40px; height: 40px;">
+                                <i class="fab fa-pinterest"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Full Description -->
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="bg-white rounded-4 p-5 shadow-sm" data-aos="fade-up">
+                    <h3 class="mb-4">About This Design</h3>
+                    <div class="content">
+                        {{ item.full_description|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Items -->
+{% if related_items %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="section-title d-inline-block">More {{ category.name }} Options</h2>
+            <p class="text-muted mt-3">Explore similar designs you might like</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for rel_item in related_items %}
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
+                <div class="item-card bg-white rounded-4 overflow-hidden shadow-sm h-100">
+                    <img src="{{ rel_item.featured_image.url }}" alt="{{ rel_item.name }}" 
+                         class="w-100" style="height: 200px; object-fit: cover;">
+                    <div class="p-3">
+                        <h5 class="mb-2">{{ rel_item.name }}</h5>
+                        <p class="text-muted small mb-3">{{ rel_item.short_description|truncatewords:10 }}</p>
+                        <a href="{% url 'category_item_detail' category.slug rel_item.slug %}" 
+                           class="btn btn-sm btn-outline-primary w-100 rounded-pill">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Related Projects -->
+{% if related_projects %}
+<section class="py-5" style="background: var(--bg-light);">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <span class="badge bg-warning text-dark mb-3 px-3 py-2">INSPIRATION</span>
+            <h2 class="section-title d-inline-block">See This Style in Action</h2>
+            <p class="text-muted mt-3">Real {{ category.name|lower }} projects we've completed</p>
+        </div>
+        
+        <div class="row g-4">
+            {% for project in related_projects %}
+            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
+                <div class="project-card rounded-4 overflow-hidden shadow-lg position-relative">
+                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" 
+                         class="w-100" style="height: 300px; object-fit: cover;">
+                    <div class="project-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end p-4"
+                         style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: opacity 0.3s;">
+                        <div class="text-white w-100">
+                            <span class="badge bg-warning text-dark mb-2">{{ project.category.name }}</span>
+                            <h5 class="text-white">{{ project.title }}</h5>
+                            <p class="mb-3">{{ project.location }}</p>
+                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-sm btn-light">
+                                View Full Project <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<script>
+    function changeImage(url) {
+        document.getElementById('mainImage').src = url;
+    }
+    
+    // Add active state to thumbnails
+    document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+            document.querySelectorAll('.gallery-thumb').forEach(t => {
+                t.style.border = 'none';
+            });
+            this.style.border = '3px solid var(--primary-color)';
+        });
+    });
+</script>
+
+<style>
+    .gallery-thumb {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    }
+    
+    .gallery-thumb:hover {
+        transform: scale(1.05);
+        border: 3px solid var(--primary-color);
+    }
+    
+    .info-card {
+        transition: transform 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .project-card:hover .project-overlay {
+        opacity: 1 !important;
+    }
+    
+    .content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        margin: 20px 0;
+    }
+</style>
+{% endblock %}
