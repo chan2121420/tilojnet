@@ -24,13 +24,13 @@
         h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; font-weight: 600; }
         .navbar { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.1); padding: 1rem 0; transition: all 0.3s ease; }
         .navbar.scrolled { padding: 0.5rem 0; box-shadow: 0 4px 30px rgba(0,0,0,0.15); }
-        .navbar-brand { display: flex; align-items: center; gap: 12px; font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--secondary); }
+        .navbar-brand { display: flex; align-items: center; gap: 12px; font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--secondary); text-decoration: none; }
         .navbar-brand img { height: 50px; width: 50px; object-fit: contain; border-radius: 8px; }
         .nav-link { color: var(--text-dark) !important; font-weight: 500; margin: 0 10px; position: relative; transition: color 0.3s ease; }
         .nav-link:hover { color: var(--primary) !important; }
         .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 50%; background: var(--primary); transition: all 0.3s ease; transform: translateX(-50%); }
         .nav-link:hover::after { width: 80%; }
-        .btn-primary-custom { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); }
+        .btn-primary-custom { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); text-decoration: none; display: inline-block; }
         .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(217, 119, 6, 0.4); color: white; }
         .footer { background: linear-gradient(135deg, #1F2937 0%, #111827 100%); color: white; padding: 60px 0 20px; margin-top: 80px; }
         .footer h5 { color: var(--accent); margin-bottom: 20px; font-size: 1.2rem; }
@@ -38,11 +38,11 @@
         .footer-links li { margin-bottom: 10px; }
         .footer-links a { color: #D1D5DB; text-decoration: none; transition: all 0.3s ease; }
         .footer-links a:hover { color: var(--accent); padding-left: 5px; }
-        .social-links a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; color: white; margin-right: 10px; transition: all 0.3s ease; }
+        .social-links a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; color: white; margin-right: 10px; transition: all 0.3s ease; text-decoration: none; }
         .social-links a:hover { background: var(--primary); transform: translateY(-3px); }
         .section-title { font-size: 2.5rem; margin-bottom: 20px; position: relative; display: inline-block; }
         .section-title::after { content: ''; position: absolute; width: 60px; height: 4px; background: var(--primary); bottom: -10px; left: 0; border-radius: 2px; }
-        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background: #25D366; color: white; border-radius: 50%; text-align: center; font-size: 30px; box-shadow: 2px 2px 15px rgba(0,0,0,0.3); z-index: 1000; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; animation: pulse 2s infinite; }
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background: #25D366; color: white; border-radius: 50%; text-align: center; font-size: 30px; box-shadow: 2px 2px 15px rgba(0,0,0,0.3); z-index: 1000; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; animation: pulse 2s infinite; text-decoration: none; }
         .whatsapp-float:hover { transform: scale(1.1); background: #128C7E; color: white; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
         .alert { border-radius: 10px; border: none; }
