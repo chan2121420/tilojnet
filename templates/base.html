@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Tilojnet Exclusive - Premium Interior Design{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Tilojnet Exclusive offers premium interior design services for residential and commercial spaces.{% endblock %}">
+    <title>{% block title %}{{ site_settings.site_name|default:"Tilojnet Exclusive" }} - {{ site_settings.tagline|default:"Premium Interior Design" }}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ site_settings.meta_description|default:'Tilojnet Exclusive offers premium interior design services for residential and commercial spaces.' }}{% endblock %}">
+    
+    {% if site_settings.favicon %}
+    <link rel="icon" href="{{ site_settings.favicon.url }}" type="image/png">
+    {% else %}
     <link rel="icon" href="/media/tilojnet-logo.png" type="image/png">
+    {% endif %}
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    
     <style>
         :root {
             --primary: #D97706;
@@ -19,34 +27,314 @@
             --text-light: #6B7280;
             --bg-light: #F9FAFB;
         }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
-        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; font-weight: 600; }
-        .navbar { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); box-shadow: 0 2px 20px rgba(0,0,0,0.1); padding: 1rem 0; transition: all 0.3s ease; }
-        .navbar.scrolled { padding: 0.5rem 0; box-shadow: 0 4px 30px rgba(0,0,0,0.15); }
-        .navbar-brand { display: flex; align-items: center; gap: 12px; font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--secondary); text-decoration: none; }
-        .navbar-brand img { height: 50px; width: 50px; object-fit: contain; border-radius: 8px; }
-        .nav-link { color: var(--text-dark) !important; font-weight: 500; margin: 0 10px; position: relative; transition: color 0.3s ease; }
-        .nav-link:hover { color: var(--primary) !important; }
-        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 50%; background: var(--primary); transition: all 0.3s ease; transform: translateX(-50%); }
-        .nav-link:hover::after { width: 80%; }
-        .btn-primary-custom { background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); text-decoration: none; display: inline-block; }
-        .btn-primary-custom:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(217, 119, 6, 0.4); color: white; }
-        .footer { background: linear-gradient(135deg, #1F2937 0%, #111827 100%); color: white; padding: 60px 0 20px; margin-top: 80px; }
-        .footer h5 { color: var(--accent); margin-bottom: 20px; font-size: 1.2rem; }
-        .footer-links { list-style: none; padding: 0; }
-        .footer-links li { margin-bottom: 10px; }
-        .footer-links a { color: #D1D5DB; text-decoration: none; transition: all 0.3s ease; }
-        .footer-links a:hover { color: var(--accent); padding-left: 5px; }
-        .social-links a { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; color: white; margin-right: 10px; transition: all 0.3s ease; text-decoration: none; }
-        .social-links a:hover { background: var(--primary); transform: translateY(-3px); }
-        .section-title { font-size: 2.5rem; margin-bottom: 20px; position: relative; display: inline-block; }
-        .section-title::after { content: ''; position: absolute; width: 60px; height: 4px; background: var(--primary); bottom: -10px; left: 0; border-radius: 2px; }
-        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background: #25D366; color: white; border-radius: 50%; text-align: center; font-size: 30px; box-shadow: 2px 2px 15px rgba(0,0,0,0.3); z-index: 1000; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; animation: pulse 2s infinite; text-decoration: none; }
-        .whatsapp-float:hover { transform: scale(1.1); background: #128C7E; color: white; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } }
-        .alert { border-radius: 10px; border: none; }
-        @media (max-width: 768px) { .section-title { font-size: 2rem; } }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            color: var(--text-dark); 
+            line-height: 1.6; 
+            overflow-x: hidden; 
+        }
+        
+        h1, h2, h3, h4, h5, h6 { 
+            font-family: 'Playfair Display', serif; 
+            font-weight: 600; 
+        }
+        
+        /* Enhanced Navbar */
+        .navbar { 
+            background: rgba(255, 255, 255, 0.98); 
+            backdrop-filter: blur(10px); 
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1); 
+            padding: 1rem 0; 
+            transition: all 0.3s ease; 
+        }
+        
+        .navbar.scrolled { 
+            padding: 0.5rem 0; 
+            box-shadow: 0 4px 30px rgba(0,0,0,0.15); 
+        }
+        
+        .navbar-brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            font-family: 'Playfair Display', serif; 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--secondary); 
+            text-decoration: none; 
+        }
+        
+        .navbar-brand img { 
+            height: 50px; 
+            width: 50px; 
+            object-fit: contain; 
+            border-radius: 8px; 
+        }
+        
+        .nav-link { 
+            color: var(--text-dark) !important; 
+            font-weight: 500; 
+            margin: 0 10px; 
+            position: relative; 
+            transition: color 0.3s ease; 
+        }
+        
+        .nav-link:hover { 
+            color: var(--primary) !important; 
+        }
+        
+        .nav-link::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0; 
+            height: 2px; 
+            bottom: -5px; 
+            left: 50%; 
+            background: var(--primary); 
+            transition: all 0.3s ease; 
+            transform: translateX(-50%); 
+        }
+        
+        .nav-link:hover::after { 
+            width: 80%; 
+        }
+        
+        /* Dropdown Enhancement */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        /* Buttons */
+        .btn-primary-custom { 
+            background: linear-gradient(135deg, var(--primary), var(--accent)); 
+            color: white; 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); 
+            text-decoration: none; 
+            display: inline-block; 
+        }
+        
+        .btn-primary-custom:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 25px rgba(217, 119, 6, 0.4); 
+            color: white; 
+        }
+        
+        /* Image Gallery */
+        .image-gallery {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gallery-main {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+        
+        .gallery-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding: 5px;
+        }
+        
+        .gallery-thumb {
+            flex-shrink: 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .gallery-thumb:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .gallery-thumb.active {
+            border-color: var(--primary);
+        }
+        
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Footer */
+        .footer { 
+            background: linear-gradient(135deg, #1F2937 0%, #111827 100%); 
+            color: white; 
+            padding: 60px 0 20px; 
+            margin-top: 80px; 
+        }
+        
+        .footer h5 { 
+            color: var(--accent); 
+            margin-bottom: 20px; 
+            font-size: 1.2rem; 
+        }
+        
+        .footer-links { 
+            list-style: none; 
+            padding: 0; 
+        }
+        
+        .footer-links li { 
+            margin-bottom: 10px; 
+        }
+        
+        .footer-links a { 
+            color: #D1D5DB; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+        }
+        
+        .footer-links a:hover { 
+            color: var(--accent); 
+            padding-left: 5px; 
+        }
+        
+        .social-links a { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 40px; 
+            height: 40px; 
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 50%; 
+            color: white; 
+            margin-right: 10px; 
+            transition: all 0.3s ease; 
+            text-decoration: none; 
+        }
+        
+        .social-links a:hover { 
+            background: var(--primary); 
+            transform: translateY(-3px); 
+        }
+        
+        /* Section Title */
+        .section-title { 
+            font-size: 2.5rem; 
+            margin-bottom: 20px; 
+            position: relative; 
+            display: inline-block; 
+        }
+        
+        .section-title::after { 
+            content: ''; 
+            position: absolute; 
+            width: 60px; 
+            height: 4px; 
+            background: var(--primary); 
+            bottom: -10px; 
+            left: 0; 
+            border-radius: 2px; 
+        }
+        
+        /* WhatsApp Float */
+        .whatsapp-float { 
+            position: fixed; 
+            width: 60px; 
+            height: 60px; 
+            bottom: 30px; 
+            right: 30px; 
+            background: #25D366; 
+            color: white; 
+            border-radius: 50%; 
+            text-align: center; 
+            font-size: 30px; 
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.3); 
+            z-index: 1000; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: all 0.3s ease; 
+            animation: pulse 2s infinite; 
+            text-decoration: none; 
+        }
+        
+        .whatsapp-float:hover { 
+            transform: scale(1.1); 
+            background: #128C7E; 
+            color: white; 
+        }
+        
+        @keyframes pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); } 
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); } 
+        }
+        
+        /* Alert */
+        .alert { 
+            border-radius: 10px; 
+            border: none; 
+        }
+        
+        /* Loading Spinner */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) { 
+            .section-title { 
+                font-size: 2rem; 
+            }
+            
+            .navbar-brand img {
+                height: 40px;
+                width: 40px;
+            }
+            
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -54,8 +342,12 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
+                {% if site_settings.logo %}
+                <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}">
+                {% else %}
                 <img src="/media/tilojnet-logo.png" alt="Tilojnet Logo">
-                <span>Tilojnet <span style="color: var(--primary);">Exclusive</span></span>
+                {% endif %}
+                <span>{{ site_settings.site_name|default:"Tilojnet" }} <span style="color: var(--primary);">Exclusive</span></span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -69,11 +361,9 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'categories_list' %}"><i class="fas fa-th-large me-2"></i>All Categories</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'categories_list' %}"><i class="fas fa-utensils me-2"></i>Kitchens</a></li>
-                            <li><a class="dropdown-item" href="{% url 'categories_list' %}"><i class="fas fa-border-none me-2"></i>Ceilings</a></li>
-                            <li><a class="dropdown-item" href="{% url 'categories_list' %}"><i class="fas fa-bed me-2"></i>Bedrooms</a></li>
-                            <li><a class="dropdown-item" href="{% url 'categories_list' %}"><i class="fas fa-bath me-2"></i>Bathrooms</a></li>
-                            <li><a class="dropdown-item" href="{% url 'categories_list' %}"><i class="fas fa-couch me-2"></i>Living Rooms</a></li>
+                            {% for cat in nav_categories %}
+                            <li><a class="dropdown-item" href="{% url 'category_detail' cat.slug %}"><i class="fas {{ cat.icon }} me-2"></i>{{ cat.name }}</a></li>
+                            {% endfor %}
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'projects_list' %}">Portfolio</a></li>
@@ -83,29 +373,37 @@
             </div>
         </div>
     </nav>
+    
     {% if messages %}
     <div class="container" style="margin-top: 100px;">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
+            <i class="fas fa-info-circle me-2"></i>{{ message }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endfor %}
     </div>
     {% endif %}
+    
     <main>{% block content %}{% endblock %}</main>
-    <a href="https://wa.me/YOUR_WHATSAPP_NUMBER" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    
+    {% if site_settings.whatsapp_number %}
+    <a href="https://wa.me/{{ site_settings.whatsapp_number }}" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    {% endif %}
+    
     <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4">
-                    <h5>About Tilojnet Exclusive</h5>
-                    <p class="text-light">We are a premium interior design company dedicated to transforming spaces into stunning, functional environments.</p>
+                    <h5>{{ site_settings.site_name|default:"Tilojnet Exclusive" }}</h5>
+                    <p class="text-light">{{ site_settings.about_short|default:"We are a premium interior design company dedicated to transforming spaces into stunning, functional environments." }}</p>
                     <div class="social-links mt-3">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        {% if site_settings.facebook_url %}<a href="{{ site_settings.facebook_url }}" target="_blank"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                        {% if site_settings.instagram_url %}<a href="{{ site_settings.instagram_url }}" target="_blank"><i class="fab fa-instagram"></i></a>{% endif %}
+                        {% if site_settings.twitter_url %}<a href="{{ site_settings.twitter_url }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+                        {% if site_settings.linkedin_url %}<a href="{{ site_settings.linkedin_url }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>{% endif %}
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 mb-4">
@@ -119,19 +417,26 @@
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Services</h5>
+                    <h5>Categories</h5>
                     <ul class="footer-links">
-                        <li><a href="#">Residential Design</a></li>
-                        <li><a href="#">Commercial Design</a></li>
-                        <li><a href="#">Renovation</a></li>
-                        <li><a href="#">Consultation</a></li>
-                        <li><a href="#">Custom Furniture</a></li>
+                        {% for cat in nav_categories %}
+                        <li><a href="{% url 'category_detail' cat.slug %}">{{ cat.name }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-6 mb-4">
-                    <h5>Newsletter</h5>
-                    <p class="text-light">Subscribe for design tips and updates.</p>
-                    <form method="post" action="{% url 'newsletter_subscribe' %}" class="mt-3">
+                    <h5>Contact Info</h5>
+                    {% if site_settings.phone %}
+                    <p class="text-light mb-2"><i class="fas fa-phone me-2"></i>{{ site_settings.phone }}</p>
+                    {% endif %}
+                    {% if site_settings.email %}
+                    <p class="text-light mb-2"><i class="fas fa-envelope me-2"></i>{{ site_settings.email }}</p>
+                    {% endif %}
+                    {% if site_settings.address %}
+                    <p class="text-light mb-3"><i class="fas fa-map-marker-alt me-2"></i>{{ site_settings.address }}</p>
+                    {% endif %}
+                    <h6 class="mt-4">Newsletter</h6>
+                    <form method="post" action="{% url 'newsletter_subscribe' %}" class="mt-2">
                         {% csrf_token %}
                         <div class="input-group">
                             <input type="email" name="email" class="form-control" placeholder="Your email" required>
@@ -143,24 +448,59 @@
             <hr style="border-color: rgba(255,255,255,0.1); margin: 40px 0 20px;">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2024 Tilojnet Exclusive. All rights reserved.</p>
+                    <p class="mb-0">&copy; {% now "Y" %} {{ site_settings.site_name|default:"Tilojnet Exclusive" }}. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-center text-md-end">
-                    <p class="mb-0">Designed with <i class="fas fa-heart" style="color: var(--accent);"></i> by Your Trademark</p>
+                    <p class="mb-0">Designed with <i class="fas fa-heart" style="color: var(--accent);"></i> by Tilojnet</p>
                 </div>
             </div>
         </div>
     </footer>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
     <script>
+        // Initialize AOS
         AOS.init({ duration: 1000, once: true });
+        
+        // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) { navbar.classList.add('scrolled'); }
-            else { navbar.classList.remove('scrolled'); }
+            if (window.scrollY > 50) { 
+                navbar.classList.add('scrolled'); 
+            } else { 
+                navbar.classList.remove('scrolled'); 
+            }
         });
+        
+        // Image Gallery Function
+        function changeImage(imageUrl, thumbElement) {
+            const mainImage = document.getElementById('mainImage');
+            if (mainImage) {
+                mainImage.src = imageUrl;
+                
+                // Update active thumbnail
+                document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+                    thumb.classList.remove('active');
+                });
+                if (thumbElement) {
+                    thumbElement.classList.add('active');
+                }
+            }
+        }
+        
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
     </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>
