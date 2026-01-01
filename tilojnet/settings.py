@@ -79,7 +79,7 @@ elif all([
     os.environ.get('db.sxmlzrnvulfikfdxrikc.supabase.co'),
     os.environ.get('postgres'),
     os.environ.get('postgres'),
-    os.environ.get('eyedeadigtal'),
+    os.environ.get('eyedeadigita'),
 ]):
     # Use Supabase credentials if provided
     DATABASES = {
@@ -87,7 +87,7 @@ elif all([
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('postgres'),
             'USER': os.environ.get('postgres'),
-            'PASSWORD': os.environ.get('eyedeadigtal'),
+            'PASSWORD': os.environ.get('eyedeadigita'),
             'HOST': os.environ.get('db.sxmlzrnvulfikfdxrikc.supabase.co'),
             'PORT': os.environ.get('SUPABASE_DB_PORT', '5432'),
             'OPTIONS': {
@@ -178,3 +178,31 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
