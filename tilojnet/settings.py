@@ -76,10 +76,10 @@ if DATABASE_URL:
         )
     }
 elif all([
-    os.environ.get(''),
+    os.environ.get('db.sxmlzrnvulfikfdxrikc.supabase.co'),
     os.environ.get('postgres'),
     os.environ.get('postgres'),
-    os.environ.get(''),
+    os.environ.get('eyedeadigtal'),
 ]):
     # Use Supabase credentials if provided
     DATABASES = {
@@ -87,8 +87,8 @@ elif all([
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('postgres'),
             'USER': os.environ.get('postgres'),
-            'PASSWORD': os.environ.get(''),
-            'HOST': os.environ.get(''),
+            'PASSWORD': os.environ.get('eyedeadigtal'),
+            'HOST': os.environ.get('db.sxmlzrnvulfikfdxrikc.supabase.co'),
             'PORT': os.environ.get('SUPABASE_DB_PORT', '5432'),
             'OPTIONS': {
                 'sslmode': 'require',
@@ -126,7 +126,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-SUPABASE_PROJECT_ID = ''
+SUPABASE_PROJECT_ID = 'sxmlzrnvulfikfdxrikc'
 AWS_STORAGE_BUCKET_NAME = 'media'
 
 AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
