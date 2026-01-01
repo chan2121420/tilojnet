@@ -64,13 +64,48 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tilojnet.wsgi.application'
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Use DATABASE_URL if provided (Render, Heroku, etc.)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+elif all([
+    os.environ.get(''),
+    os.environ.get('postgres'),
+    os.environ.get('postgres'),
+    os.environ.get(''),
+]):
+    # Use Supabase credentials if provided
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('postgres'),
+            'USER': os.environ.get('postgres'),
+            'PASSWORD': os.environ.get(''),
+            'HOST': os.environ.get(''),
+            'PORT': os.environ.get('SUPABASE_DB_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': 'require',
+                'connect_timeout': 10,
+            },
+            'CONN_MAX_AGE': 0,
+        }
+    }
+else:
+    # Fallback to SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
