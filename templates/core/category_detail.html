@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{%load static%}
+{% load static %}
 
 {% block content %}
 <section class="category-header" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{% if category.banner_image %}{{ category.banner_image.url }}{% else %}{{ category.featured_image.url }}{% endif %}'); background-size: cover; background-position: center; padding: 150px 0 100px; margin-top: 76px;">
