@@ -75,28 +75,6 @@ if DATABASE_URL:
             conn_health_checks=True,
         )
     }
-elif all([
-    os.environ.get('db.sxmlzrnvulfikfdxrikc.supabase.co'),
-    os.environ.get('postgres'),
-    os.environ.get('postgres'),
-    os.environ.get('eyedeadigita'),
-]):
-    # Use Supabase credentials if provided
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('postgres'),
-            'USER': os.environ.get('postgres'),
-            'PASSWORD': os.environ.get('eyedeadigita'),
-            'HOST': os.environ.get('db.sxmlzrnvulfikfdxrikc.supabase.co'),
-            'PORT': os.environ.get('SUPABASE_DB_PORT', '5432'),
-            'OPTIONS': {
-                'sslmode': 'require',
-                'connect_timeout': 10,
-            },
-            'CONN_MAX_AGE': 0,
-        }
-    }
 else:
     # Fallback to SQLite for local development
     DATABASES = {
@@ -105,7 +83,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
@@ -126,8 +103,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-SUPABASE_PROJECT_ID = 'sxmlzrnvulfikfdxrikc'
-AWS_STORAGE_BUCKET_NAME = 'media'
+SUPABASE_PROJECT_ID = os.environ.get('SUPABASE_PROJECT_ID', 'sxmlzrnvulfikfdxrikc')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('SUPABASE_BUCKET_NAME', 'media')
 
 AWS_ACCESS_KEY_ID = os.environ.get('SUPABASE_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.environ.get('SUPABASE_SECRET_ACCESS_KEY')
@@ -136,12 +113,11 @@ AWS_S3_ENDPOINT_URL = f'https://{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/s3'
 
 AWS_S3_REGION_NAME = 'us-east-1'
 AWS_S3_ADDRESSING_STYLE = "path"
-AWS_QUERYSTRING_AUTH = False  # Make URLs public
+AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = False
 
 AWS_S3_CUSTOM_DOMAIN = f'{SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}'
 
-# Media URL
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
 
 AWS_S3_OBJECT_PARAMETERS = {
