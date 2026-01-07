@@ -2,85 +2,92 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse, Http404
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Service, ServiceCategory
-from projects.models import Project 
+from .models import ServiceCategory, CategoryItem
+from projects.models import Project
 
-def services_list(request):
-    """All services page"""
-    categories = ServiceCategory.objects.all()
-    services = Service.objects.all()
+
+def categories_list(request):
+    categories = ServiceCategory.objects.all().annotate(
+        item_count=Count('items'),
+        project_count=Count('projects')
+    )
+    context = {'categories': categories}
+    return render(request, 'core/categories_list.html', context)
+
+
+def category_detail(request, slug):
+    category = get_object_or_404(ServiceCategory, slug=slug)
+    items = CategoryItem.objects.filter(category=category)
     
-    category_slug = request.GET.get('category')
-    if category_slug:
-        services = services.filter(category__slug=category_slug)
+    style_filter = request.GET.get('style')
+    if style_filter:
+        items = items.filter(design_styles__contains=[style_filter])
     
-    context = {
-        'categories': categories,
-        'services': services,
-        'active_category': category_slug,
-    }
-    return render(request, 'services/services_list.html', context)
-
-
-def service_detail(request, slug):
-    """Individual service page"""
-    service = get_object_or_404(Service, slug=slug)
-    related_services = Service.objects.filter(category=service.category).exclude(id=service.id)[:3]
+    all_styles = set()
+    for item in CategoryItem.objects.filter(category=category):
+        if item.design_styles:
+            all_styles.update(item.design_styles)
+    
     related_projects = Project.objects.filter(
+        service_categories=category, 
         is_published=True
-    )[:4]  # You can add service-to-project relationships
+    )[:4]
+    
+    popular_items = items.filter(is_popular=True)[:3]
     
     context = {
-        'service': service,
-        'related_services': related_services,
+        'category': category,
+        'items': items,
+        'popular_items': popular_items,
+        'related_projects': related_projects,
+        'all_styles': sorted(all_styles),
+        'active_style': style_filter,
+    }
+    return render(request, 'core/category_detail.html', context)
+
+
+def category_item_detail(request, category_slug, item_slug):
+    category = get_object_or_404(ServiceCategory, slug=category_slug)
+    item = get_object_or_404(CategoryItem, category=category, slug=item_slug)
+    
+    related_items = CategoryItem.objects.filter(
+        category=category
+    ).exclude(id=item.id)[:4]
+    
+    related_projects = Project.objects.filter(
+        service_categories=category, 
+        is_published=True
+    )[:3]
+    
+    context = {
+        'category': category,
+        'item': item,
+        'related_items': related_items,
         'related_projects': related_projects,
     }
-    return render(request, 'services/service_detail.html', context)
-def categories_list(request):
-    categories = ServiceCategory.objects.all().values("id", "name")
-    return JsonResponse(list(categories), safe=False)
+    return render(request, 'core/category_item_detail.html', context)
 
 
 def search_categories(request):
-    query = request.GET.get("q", "")
-    categories = ServiceCategory.objects.filter(name__icontains=query).values("id", "name")
-    return JsonResponse(list(categories), safe=False)
-
-def category_detail(request, slug):
-    try:
-        category = ServiceCategory.objects.get(slug=slug)
-    except ServiceCategory.DoesNotExist:
-        raise Http404("Category not found")
-
-    data = {
-        "id": category.id,
-        "name": category.name,
-        "slug": category.slug,
-        "description": category.description if hasattr(category, "description") else "",
+    query = request.GET.get('q', '')
+    
+    categories = ServiceCategory.objects.filter(
+        Q(name__icontains=query) | Q(description__icontains=query)
+    )
+    
+    items = CategoryItem.objects.filter(
+        Q(name__icontains=query) | 
+        Q(short_description__icontains=query) | 
+        Q(full_description__icontains=query)
+    )
+    
+    context = {
+        'query': query,
+        'categories': categories,
+        'items': items,
+        'total_results': categories.count() + items.count(),
     }
-
-    return JsonResponse(data)
-
-def category_item_detail(request, category_slug, item_slug):
-    try:
-        category = ServiceCategory.objects.get(slug=category_slug)
-    except ServiceCategory.DoesNotExist:
-        raise Http404("Category not found")
-
-    try:
-        item = Service.objects.get(slug=item_slug, category=category)
-    except Service.DoesNotExist:
-        raise Http404("Item not found in this category")
-
-    data = {
-        "id": item.id,
-        "title": item.title,
-        "slug": item.slug,
-        "category": category.name,
-        "short_description": item.short_description,
-        "full_description": item.full_description,
-    }
-    return JsonResponse(data)
+    return render(request, 'core/search_results.html', context)
