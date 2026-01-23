@@ -56,7 +56,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'core.context_processors.site_settings', 
+                # REMOVED: 'core.context_processors.site_settings',
             ],
         },
     },
@@ -142,6 +142,14 @@ CKEDITOR_CONFIGS = {
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+# Simple in-memory cache for template tags
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
 
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True

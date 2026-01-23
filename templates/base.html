@@ -1,9 +1,11 @@
 {% load static %}
+{% load site_extras %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% get_site_settings as site_settings %}
     <title>{% block title %}{{ site_settings.site_name|default:"Tilojnet Exclusive" }} - {{ site_settings.tagline|default:"Premium Interior Design" }}{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}{{ site_settings.meta_description|default:'Tilojnet Exclusive offers premium interior design services for residential and commercial spaces.' }}{% endblock %}">
 
@@ -337,6 +339,7 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    {% get_nav_categories as nav_categories %}
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home' %}">
