@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+# exit on error
 set -o errexit
 
 echo "==================================="
@@ -5,22 +7,17 @@ echo "Starting Build Process..."
 echo "==================================="
 
 echo "Step 1: Installing dependencies..."
+pip install --upgrade pip
 pip install -r requirements.txt
 
 echo "Step 2: Collecting static files..."
 python manage.py collectstatic --no-input
 
-echo "Step 3: Creating migrations in correct order..."
-# Create migrations in dependency order
-python manage.py makemigrations services --noinput || echo "Services migrations already exist"
-python manage.py makemigrations projects --noinput || echo "Projects migrations already exist"
-python manage.py makemigrations contact --noinput || echo "Contact migrations already exist"
-python manage.py makemigrations core --noinput || echo "Core migrations already exist"
-
-echo "Step 4: Running migrations..."
+echo "Step 3: Running migrations..."
+# Run migrations for all apps
 python manage.py migrate --noinput
 
-echo "Step 5: Creating default site settings..."
+echo "Step 4: Creating default site settings..."
 python manage.py shell << 'EOF'
 from core.models import SiteSettings
 try:
