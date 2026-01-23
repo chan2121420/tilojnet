@@ -67,7 +67,6 @@ WSGI_APPLICATION = 'tilojnet.wsgi.application'
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
-    # Use DATABASE_URL if provided (Render, Heroku, etc.)
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
