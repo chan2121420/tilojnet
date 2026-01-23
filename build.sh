@@ -10,12 +10,13 @@ echo "Step 1: Installing dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
-echo "Step 2: Collecting static files..."
-python manage.py collectstatic --no-input
-
-echo "Step 3: Running migrations..."
-# Run migrations for all apps
+echo "Step 2: Running migrations..."
+# Run migrations FIRST before collecting static
 python manage.py migrate --noinput
+
+echo "Step 3: Collecting static files..."
+# Collect static files AFTER migrations
+python manage.py collectstatic --no-input
 
 echo "Step 4: Creating default site settings..."
 python manage.py shell << 'EOF'
