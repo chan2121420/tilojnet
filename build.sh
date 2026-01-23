@@ -14,6 +14,9 @@ echo "Step 2: Running migrations..."
 # Run migrations FIRST before collecting static
 python manage.py migrate --noinput
 
+
+python manage.py init_site_settings
+
 echo "Step 3: Collecting static files..."
 # Collect static files AFTER migrations
 python manage.py collectstatic --no-input
