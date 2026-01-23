@@ -1,29 +1,30 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from django.db.models import Q
-from django.core.mail import send_mail
-from django.conf import settings
-from .models import *
+from django.db.models import F
+
+from .models import Project, ProjectCategory
+
 
 def projects_list(request):
-    """Portfolio/projects listing"""
-    projects = Project.objects.filter(is_published=True)
+    """
+    Portfolio/projects listing with optimized queries
+    Uses custom manager methods for clean, DRY code
+    """
+    # Start with published projects and optimize queries
+    projects = Project.objects.published().with_related()
+    
+    # Get all categories for filter dropdown
     categories = ProjectCategory.objects.all()
     
-    # Filtering
+    # Apply filters using manager methods
     category_slug = request.GET.get('category')
     search_query = request.GET.get('q')
     
     if category_slug:
-        projects = projects.filter(category__slug=category_slug)
+        projects = projects.by_category(category_slug)
     
     if search_query:
-        projects = projects.filter(
-            Q(title__icontains=search_query) |
-            Q(short_description__icontains=search_query) |
-            Q(location__icontains=search_query)
-        )
+        projects = projects.search(search_query)
     
     # Pagination
     paginator = Paginator(projects, 12)
@@ -40,18 +41,32 @@ def projects_list(request):
 
 
 def project_detail(request, slug):
-    """Individual project detail"""
-    project = get_object_or_404(Project, slug=slug, is_published=True)
-    
-    # Increment views
-    project.views_count += 1
-    project.save(update_fields=['views_count'])
-    
-    # Get related projects
-    related_projects = Project.objects.filter(
-        category=project.category,
+    """
+    Individual project detail with optimized queries
+    Increments view count atomically
+    """
+    # Optimize query with select_related and prefetch_related
+    project = get_object_or_404(
+        Project.objects.select_related('category')
+                      .prefetch_related('service_categories', 'images'),
+        slug=slug,
         is_published=True
-    ).exclude(id=project.id)[:3]
+    )
+    
+    # Increment views atomically (avoids race conditions)
+    Project.objects.filter(pk=project.pk).update(views_count=F('views_count') + 1)
+    # Refresh to get updated count
+    project.refresh_from_db(fields=['views_count'])
+    
+    # Get related projects efficiently
+    related_projects = (
+        Project.objects.published()
+                      .filter(category=project.category)
+                      .exclude(id=project.id)
+                      .select_related('category')
+                      .only('id', 'slug', 'title', 'featured_image', 'location', 'category')
+                      [:3]
+    )
     
     context = {
         'project': project,
