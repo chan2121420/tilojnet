@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import *
+from .models import ContactMessage, QuoteRequest, Newsletter
+
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
@@ -54,9 +55,3 @@ class NewsletterAdmin(admin.ModelAdmin):
     list_editable = ['is_active']
     search_fields = ['email']
     date_hierarchy = 'subscribed_at'
-
-
-# Customize Admin Site
-admin.site.site_header = "Tilojnet Exclusive Admin"
-admin.site.site_title = "Tilojnet Admin Portal"
-admin.site.index_title = "Interior Design Management System"
