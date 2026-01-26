@@ -2,10 +2,10 @@ from django.db import models
 from django.utils.text import slugify
 from ckeditor.fields import RichTextField
 from services.models import ServiceCategory
+from .managers import ProjectManager
 
 
 class ProjectCategory(models.Model):
-    """Project categories - can link to service categories"""
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
@@ -29,7 +29,6 @@ class ProjectCategory(models.Model):
 
 
 class Project(models.Model):
-    """Portfolio projects"""
     STATUS_CHOICES = [
         ('completed', 'Completed'),
         ('ongoing', 'Ongoing'),
@@ -73,6 +72,8 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    objects = ProjectManager()
+
     class Meta:
         ordering = ['-project_date', '-created_at']
 
@@ -86,7 +87,6 @@ class Project(models.Model):
 
 
 class ProjectImage(models.Model):
-    """Project gallery images"""
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name='images'
     )

@@ -12,7 +12,7 @@
 <section class="py-4" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <div class="container">
         <div class="row g-3 align-items-center">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <form method="get" class="search-form">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" placeholder="Search projects..." value="{{ search_query }}">
@@ -20,19 +20,11 @@
                     </div>
                 </form>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <select class="form-select" onchange="window.location.href='?category=' + this.value">
                     <option value="">All Categories</option>
                     {% for cat in categories %}
                     <option value="{{ cat.slug }}" {% if active_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="col-md-4">
-                <select class="form-select" onchange="window.location.href='?service_category=' + this.value">
-                    <option value="">All Service Types</option>
-                    {% for cat in service_categories %}
-                    <option value="{{ cat.slug }}" {% if active_service_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -61,7 +53,9 @@
                     </div>
                     <div class="p-4">
                         <div class="mb-2">
+                            {% if project.category %}
                             <span class="badge bg-light text-dark border me-2">{{ project.category.name }}</span>
+                            {% endif %}
                             {% for sc in project.service_categories.all %}
                             <span class="badge bg-light text-dark border">{{ sc.name }}</span>
                             {% endfor %}
