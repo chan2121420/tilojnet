@@ -2,403 +2,200 @@
 {% load static %}
 
 {% block content %}
-<!-- Hero Section with Carousel -->
-<section class="hero-section" style="margin-top: 76px;">
+
+<section style="min-height: 100vh; display: flex; align-items: center; margin-top: 76px; position: relative; overflow: hidden;">
     {% if hero_slides %}
-    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="carousel-indicators">
-            {% for slide in hero_slides %}
-            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></button>
-            {% endfor %}
-        </div>
-        <div class="carousel-inner">
-            {% for slide in hero_slides %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('{{ slide.image.url }}'); background-size: cover; background-position: center; min-height: 100vh; display: flex; align-items: center;">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-lg-8" data-aos="fade-right">
-                                <h1 class="display-2 text-white fw-bold mb-4" style="line-height: 1.2;">{{ slide.title }}</h1>
-                                <p class="lead text-white mb-5" style="font-size: 1.5rem;">{{ slide.subtitle }}</p>
-                                <div class="d-flex gap-3 flex-wrap">
-                                    <a href="{{ slide.cta_link }}" class="btn btn-primary-custom btn-lg px-5">
-                                        {{ slide.cta_text }} <i class="fas fa-arrow-right ms-2"></i>
-                                    </a>
-                                    <a href="{% url 'categories_list' %}" class="btn btn-outline-light btn-lg px-5">
-                                        Browse Categories
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
+    {% with hero_slides|first as slide %}
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
+        <img src="{{ slide.image.url }}" alt="{{ slide.title }}" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);">
     </div>
+    <div class="container" style="position: relative; z-index: 1;">
+        <div style="max-width: 900px;">
+            <h1 class="fade-in-up" style="color: var(--pure-white); margin-bottom: var(--space-md);">
+                {{ slide.title }}
+            </h1>
+            <p class="lead fade-in-up delay-1" style="color: rgba(255, 255, 255, 0.9); margin-bottom: var(--space-lg); max-width: 600px;">
+                {{ slide.subtitle }}
+            </p>
+            <div class="fade-in-up delay-2" style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+                <a href="{{ slide.cta_link }}" class="btn-primary">{{ slide.cta_text }}</a>
+                <a href="{% url 'projects_list' %}" class="btn-secondary" style="background: rgba(255, 255, 255, 0.1); color: var(--pure-white); border-color: rgba(255, 255, 255, 0.3);">View Our Work</a>
+            </div>
+        </div>
+    </div>
+    {% endwith %}
     {% else %}
-    <!-- Fallback hero section when no slides exist -->
-    <div class="hero-slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920'); background-size: cover; background-position: center; min-height: 100vh; display: flex; align-items: center;">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8" data-aos="fade-right">
-                    <h1 class="display-2 text-white fw-bold mb-4" style="line-height: 1.2;">Transform Your Space</h1>
-                    <p class="lead text-white mb-5" style="font-size: 1.5rem;">Premium Interior Design Solutions for Modern Living</p>
-                    <div class="d-flex gap-3 flex-wrap">
-                        <a href="{% url 'quote_request' %}" class="btn btn-primary-custom btn-lg px-5">
-                            Get Started <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
-                        <a href="{% url 'categories_list' %}" class="btn btn-outline-light btn-lg px-5">
-                            Browse Categories
-                        </a>
-                    </div>
-                </div>
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
+        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920" alt="Premium Interior" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);">
+    </div>
+    <div class="container" style="position: relative; z-index: 1;">
+        <div style="max-width: 900px;">
+            <h1 class="fade-in-up" style="color: var(--pure-white); margin-bottom: var(--space-md);">
+                Sophisticated Spaces<br>for Discerning Clients
+            </h1>
+            <p class="lead fade-in-up delay-1" style="color: rgba(255, 255, 255, 0.9); margin-bottom: var(--space-lg); max-width: 600px;">
+                We create timeless interiors that balance aesthetic excellence with functional precision.
+            </p>
+            <div class="fade-in-up delay-2" style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+                <a href="{% url 'quote_request' %}" class="btn-primary">Request Consultation</a>
+                <a href="{% url 'projects_list' %}" class="btn-secondary" style="background: rgba(255, 255, 255, 0.1); color: var(--pure-white); border-color: rgba(255, 255, 255, 0.3);">View Our Work</a>
             </div>
         </div>
     </div>
     {% endif %}
 </section>
 
-<!-- Features Section -->
-<section class="py-5" style="background: white; margin-top: -80px; position: relative; z-index: 10;">
+<section style="background: var(--charcoal); color: var(--pure-white); padding: var(--space-lg) 0;">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="feature-box text-center p-4 bg-white rounded-4 h-100 shadow-lg border-0" style="transition: transform 0.3s ease;">
-                    <div class="icon-wrapper mb-3">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, #FEF3C7, #FDE68A);">
-                            <i class="fas fa-paint-brush fa-2x" style="color: var(--primary);"></i>
-                        </div>
-                    </div>
-                    <h4 class="mb-3">Creative Design</h4>
-                    <p class="text-muted mb-0">Innovative designs tailored to your vision</p>
-                </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); text-align: center;">
+            <div>
+                <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 300; color: var(--gold-accent); margin-bottom: var(--space-xs);">10+</div>
+                <div style="font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light-grey);">Years Established</div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="feature-box text-center p-4 bg-white rounded-4 h-100 shadow-lg border-0" style="transition: transform 0.3s ease;">
-                    <div class="icon-wrapper mb-3">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, #DBEAFE, #BFDBFE);">
-                            <i class="fas fa-users fa-2x" style="color: var(--primary);"></i>
-                        </div>
-                    </div>
-                    <h4 class="mb-3">Expert Team</h4>
-                    <p class="text-muted mb-0">Experienced professionals dedicated to excellence</p>
-                </div>
+            <div>
+                <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 300; color: var(--gold-accent); margin-bottom: var(--space-xs);">100+</div>
+                <div style="font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light-grey);">Projects Delivered</div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="feature-box text-center p-4 bg-white rounded-4 h-100 shadow-lg border-0" style="transition: transform 0.3s ease;">
-                    <div class="icon-wrapper mb-3">
-                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; background: linear-gradient(135deg, #D1FAE5, #A7F3D0);">
-                            <i class="fas fa-award fa-2x" style="color: var(--primary);"></i>
-                        </div>
-                    </div>
-                    <h4 class="mb-3">Quality Guarantee</h4>
-                    <p class="text-muted mb-0">Premium materials and superior craftsmanship</p>
-                </div>
+            <div>
+                <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 300; color: var(--gold-accent); margin-bottom: var(--space-xs);">95%</div>
+                <div style="font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light-grey);">Client Retention</div>
+            </div>
+            <div>
+                <div style="font-family: var(--font-display); font-size: 3rem; font-weight: 300; color: var(--gold-accent); margin-bottom: var(--space-xs);">50+</div>
+                <div style="font-size: 0.875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--light-grey);">Industry Awards</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- About Section -->
-<section class="py-5 my-5">
+<section class="section">
     <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6" data-aos="fade-right">
-                <div class="position-relative">
-                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800" alt="About" class="img-fluid rounded-4 shadow-lg">
-                    <div class="position-absolute bottom-0 end-0 m-4 bg-white rounded-3 p-3 shadow-lg">
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="text-center">
-                                <h3 class="mb-0 fw-bold" style="color: var(--primary);">10+</h3>
-                                <small class="text-muted">Years</small>
-                            </div>
-                            <div class="text-center">
-                                <h3 class="mb-0 fw-bold" style="color: var(--primary);">100+</h3>
-                                <small class="text-muted">Projects</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6" data-aos="fade-left">
-                <span class="badge bg-warning text-dark mb-3 px-3 py-2">ABOUT US</span>
-                <h2 class="display-5 mb-4">Transforming Spaces, Creating Dreams</h2>
-                <p class="text-muted mb-4 lead">At Tilojnet Exclusive, we believe every space tells a story. Our expert team combines creativity, functionality, and your vision to create stunning environments.</p>
-                <div class="row g-4 mb-4">
-                    <div class="col-6">
-                        <div class="d-flex align-items-start">
-                            <i class="fas fa-check-circle fa-2x text-success me-3"></i>
-                            <div>
-                                <h5 class="mb-1">Premium Quality</h5>
-                                <small class="text-muted">Top-grade materials</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-start">
-                            <i class="fas fa-medal fa-2x text-warning me-3"></i>
-                            <div>
-                                <h5 class="mb-1">Award Winning</h5>
-                                <small class="text-muted">50+ awards</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-start">
-                            <i class="fas fa-clock fa-2x text-primary me-3"></i>
-                            <div>
-                                <h5 class="mb-1">On-Time Delivery</h5>
-                                <small class="text-muted">Always punctual</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-start">
-                            <i class="fas fa-smile fa-2x text-info me-3"></i>
-                            <div>
-                                <h5 class="mb-1">95% Satisfaction</h5>
-                                <small class="text-muted">Happy clients</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <a href="{% url 'about' %}" class="btn btn-primary-custom btn-lg">Learn More About Us</a>
-            </div>
+        <div class="container-narrow" style="text-align: center; margin-bottom: var(--space-xl);">
+            <h2 style="margin-bottom: var(--space-md);">What We Do</h2>
+            <p class="lead">We deliver comprehensive interior design solutions for residential and commercial spaces, focusing on timeless aesthetics and lasting value.</p>
         </div>
-    </div>
-</section>
-
-<!-- Categories Section -->
-<section class="py-5" style="background: var(--bg-light);">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">OUR SPECIALTIES</span>
-            <h2 class="display-5 mb-3">Browse By Category</h2>
-            <p class="text-muted lead">Explore our comprehensive range of interior design solutions</p>
-        </div>
-        <div class="row g-4">
-            {% for category in featured_categories %}
-            <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
-                <div class="category-card bg-white rounded-4 overflow-hidden shadow-sm h-100 position-relative" style="transition: all 0.3s ease;">
-                    <div class="category-image" style="height: 280px; overflow: hidden; position: relative;">
-                        <img src="{{ category.featured_image.url }}" alt="{{ category.name }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.5s;">
-                        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);"></div>
-                    </div>
-                    <div class="position-absolute bottom-0 start-0 w-100 p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="category-icon bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                                <i class="fas {{ category.icon }} fa-2x" style="color: var(--primary);"></i>
-                            </div>
-                            <span class="badge bg-warning text-dark px-3 py-2">{{ category.item_count }} Option{{ category.item_count|pluralize }}</span>
-                        </div>
-                        <h3 class="text-white mb-2">{{ category.name }}</h3>
-                        <p class="text-white-50 mb-3 small">{{ category.description|truncatewords:12 }}</p>
-                        <a href="{% url 'category_detail' category.slug %}" class="btn btn-light rounded-pill">
-                            Explore {{ category.name }} <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg);">
+            {% for category in featured_categories|slice:":3" %}
+            <div style="border-top: 1px solid var(--light-grey); padding-top: var(--space-md); transition: var(--transition-smooth);">
+                <h3 style="font-size: 1.75rem; margin-bottom: var(--space-sm);">{{ category.name }}</h3>
+                <p style="margin-bottom: var(--space-md);">{{ category.description|truncatewords:20 }}</p>
+                <a href="{% url 'category_detail' category.slug %}" class="btn-text">Explore {{ category.name }}</a>
             </div>
             {% endfor %}
         </div>
-        <div class="text-center mt-5" data-aos="fade-up">
-            <a href="{% url 'categories_list' %}" class="btn btn-primary-custom btn-lg px-5">View All Categories</a>
+        
+        <div style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'categories_list' %}" class="btn-secondary">View All Services</a>
         </div>
     </div>
 </section>
 
-<!-- Quick Categories Grid -->
-<section class="py-5">
+<section style="background: var(--off-white); padding: var(--space-2xl) 0;">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h3 class="mb-4">All Our Design Categories</h3>
-            <p class="text-muted">Quick access to all our services</p>
+        <div class="container-narrow" style="text-align: center; margin-bottom: var(--space-xl);">
+            <h2 style="margin-bottom: var(--space-md);">Selected Work</h2>
+            <p class="lead">A curated collection of our recent projects showcasing craftsmanship and attention to detail.</p>
         </div>
-        <div class="row g-3">
-            {% for cat in all_categories_preview %}
-            <div class="col-lg-3 col-md-4 col-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter0|divisibleby:4|yesno:'0,100,200,300' }}">
-                <a href="{% url 'category_detail' cat.slug %}" class="text-decoration-none">
-                    <div class="quick-cat-card bg-white rounded-3 p-4 text-center shadow-sm h-100" style="transition: all 0.3s ease; border: 2px solid transparent;">
-                        <i class="fas {{ cat.icon }} fa-3x mb-3" style="color: var(--primary);"></i>
-                        <h6 class="mb-2 text-dark">{{ cat.name }}</h6>
-                        <small class="text-muted">{{ cat.item_count }} option{{ cat.item_count|pluralize }}</small>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<!-- Portfolio Section -->
-<section class="py-5" style="background: var(--bg-light);">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">OUR PORTFOLIO</span>
-            <h2 class="display-5 mb-3">Featured Projects</h2>
-            <p class="text-muted lead">Explore our stunning completed projects</p>
-        </div>
-        <div class="row g-4">
-            {% for project in featured_projects %}
-            <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
-                <div class="project-card rounded-4 overflow-hidden shadow-lg position-relative" style="height: 400px;">
-                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-100 h-100 object-fit-cover">
-                    <div class="project-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: opacity 0.3s;">
-                        <div class="text-white w-100">
-                            <span class="badge bg-warning text-dark mb-2">{{ project.category.name }}</span>
-                            <h4 class="text-white mb-2">{{ project.title }}</h4>
-                            <p class="mb-3"><i class="fas fa-map-marker-alt me-2"></i>{{ project.location }}</p>
-                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-sm btn-light">View Project Details</a>
-                        </div>
-                    </div>
+        
+        <div style="display: grid; gap: var(--space-md);">
+            {% for project in featured_projects|slice:":3" %}
+            <a href="{% url 'project_detail' project.slug %}" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); align-items: center; text-decoration: none; color: inherit; {% if forloop.counter|divisibleby:2 %}direction: rtl;{% endif %}">
+                <div style="overflow: hidden;">
+                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" style="width: 100%; height: 500px; object-fit: cover; transition: var(--transition-smooth);">
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="text-center mt-5" data-aos="fade-up">
-            <a href="{% url 'projects_list' %}" class="btn btn-primary-custom btn-lg px-5">View Full Portfolio</a>
-        </div>
-    </div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">TESTIMONIALS</span>
-            <h2 class="display-5 mb-3">What Our Clients Say</h2>
-            <p class="text-muted lead">Real feedback from satisfied clients</p>
-        </div>
-        <div class="row g-4">
-            {% for testimonial in testimonials %}
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
-                <div class="testimonial-card bg-white rounded-4 p-4 h-100 shadow-sm position-relative">
-                    <div class="position-absolute top-0 start-0 m-3">
-                        <i class="fas fa-quote-left fa-2x" style="color: var(--accent); opacity: 0.2;"></i>
-                    </div>
-                    <div class="stars mb-3 mt-4">
-                        {% for i in "12345" %}
-                            {% if forloop.counter <= testimonial.rating %}
-                                <i class="fas fa-star" style="color: #FCD34D;"></i>
-                            {% else %}
-                                <i class="far fa-star" style="color: #FCD34D;"></i>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <p class="text-muted mb-4">"{{ testimonial.testimonial_text }}"</p>
-                    <div class="d-flex align-items-center">
-                        {% if testimonial.client_image %}
-                            <img src="{{ testimonial.client_image.url }}" alt="{{ testimonial.client_name }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
-                        {% else %}
-                            <div class="rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--primary); color: white; font-weight: bold; font-size: 1.2rem;">
-                                {{ testimonial.client_name.0 }}
-                            </div>
-                        {% endif %}
-                        <div>
-                            <h6 class="mb-0">{{ testimonial.client_name }}</h6>
-                            <small class="text-muted">{{ testimonial.client_position }}{% if testimonial.client_company %}, {{ testimonial.client_company }}{% endif %}</small>
-                        </div>
-                    </div>
+                <div style="{% if forloop.counter|divisibleby:2 %}direction: ltr;{% endif %}">
+                    <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">{{ project.category.name }}</div>
+                    <h3 style="font-size: 2rem; margin-bottom: var(--space-sm);">{{ project.title }}</h3>
+                    <p style="margin-bottom: var(--space-md); line-height: 1.8;">{{ project.short_description|truncatewords:25 }}</p>
+                    <span class="btn-text">View Project</span>
                 </div>
-            </div>
+            </a>
             {% endfor %}
+        </div>
+        
+        <div style="text-align: center; margin-top: var(--space-xl);">
+            <a href="{% url 'projects_list' %}" class="btn-secondary">View Full Portfolio</a>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="py-5" style="background: linear-gradient(135deg, var(--primary), var(--accent));">
+<section class="section">
     <div class="container">
-        <div class="text-center" data-aos="zoom-in">
-            <h2 class="text-white display-5 mb-4">Ready to Transform Your Space?</h2>
-            <p class="text-white mb-5 lead">Let's create something amazing together!</p>
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="{% url 'quote_request' %}" class="btn btn-light btn-lg px-5">
-                    <i class="fas fa-clipboard me-2"></i> Get Free Quote
-                </a>
-                <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-5">
-                    <i class="fas fa-phone me-2"></i> Contact Us
-                </a>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl); align-items: center;">
+            <div>
+                <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800" alt="About Tilojnet" style="width: 100%; height: 600px; object-fit: cover;">
+            </div>
+            <div>
+                <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">Our Approach</div>
+                <h2 style="margin-bottom: var(--space-md);">Design Built on Expertise</h2>
+                <p style="margin-bottom: var(--space-md);">
+                    We approach each project with the understanding that interior design is not decoration—it's architecture for living. Our team brings together specialists in space planning, material selection, and custom fabrication to deliver environments that endure.
+                </p>
+                <p style="margin-bottom: var(--space-lg);">
+                    With over a decade of experience serving discerning clients, we've refined a process that balances creative vision with practical execution. The result: spaces that reflect your needs while exceeding your expectations.
+                </p>
+                <a href="{% url 'about' %}" class="btn-text">Learn About Our Process</a>
             </div>
         </div>
+    </div>
+</section>
+
+<section style="background: var(--off-white); padding: var(--space-2xl) 0;">
+    <div class="container-narrow">
+        <div style="text-align: center; margin-bottom: var(--space-xl);">
+            <h2>Client Testimonials</h2>
+        </div>
+        
+        {% for testimonial in testimonials|slice:":2" %}
+        <div style="border-top: 1px solid var(--light-grey); padding: var(--space-lg) 0;">
+            <p style="font-family: var(--font-display); font-size: 1.5rem; line-height: 1.6; margin-bottom: var(--space-md); color: var(--charcoal);">
+                "{{ testimonial.testimonial_text }}"
+            </p>
+            <div>
+                <div style="font-weight: 500; margin-bottom: 0.25rem;">{{ testimonial.client_name }}</div>
+                <div style="font-size: 0.875rem; color: var(--warm-grey);">{{ testimonial.client_position }}{% if testimonial.client_company %}, {{ testimonial.client_company }}{% endif %}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="container-narrow" style="text-align: center;">
+        <h2 style="margin-bottom: var(--space-md);">Ready to Begin?</h2>
+        <p class="lead" style="margin-bottom: var(--space-lg);">
+            Schedule a consultation to discuss your project requirements and explore how we can bring your vision to life.
+        </p>
+        <a href="{% url 'quote_request' %}" class="btn-primary">Request Consultation</a>
     </div>
 </section>
 
 <style>
-/* Feature Box Hover */
-.feature-box:hover {
-    transform: translateY(-10px);
+/* Project hover effect */
+section a[href*="project_detail"]:hover img {
+    transform: scale(1.05);
 }
 
-/* Category Card Hover */
-.category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
-}
-
-.category-card:hover .category-image img {
-    transform: scale(1.1);
-}
-
-/* Quick Category Hover */
-.quick-cat-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary) !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
-}
-
-/* Project Card Hover */
-.project-card:hover .project-overlay {
-    opacity: 1 !important;
-}
-
-/* Testimonial Card */
-.testimonial-card {
-    border-top: 4px solid var(--primary);
-}
-
-/* Smooth Scrolling */
-html {
-    scroll-behavior: smooth;
-}
-
-/* Carousel Controls */
-.carousel-control-prev,
-.carousel-control-next {
-    width: 50px;
-    height: 50px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.carousel-control-prev {
-    left: 20px;
-}
-
-.carousel-control-next {
-    right: 20px;
-}
-
-.carousel-control-prev:hover,
-.carousel-control-next:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-/* Carousel Indicators */
-.carousel-indicators button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin: 0 5px;
+@media (max-width: 768px) {
+    section a[href*="project_detail"] {
+        grid-template-columns: 1fr !important;
+        direction: ltr !important;
+    }
+    
+    section a[href*="project_detail"] > div:first-child {
+        order: 1;
+    }
+    
+    section a[href*="project_detail"] > div:last-child {
+        order: 2;
+        direction: ltr !important;
+    }
+    
+    section div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
 }
 </style>
+
 {% endblock %}

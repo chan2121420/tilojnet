@@ -2,74 +2,68 @@
 {% load static %}
 
 {% block content %}
-<section class="page-header" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600607687644-aac4c3eac7f4?w=1920'); background-size: cover; background-position: center; padding: 150px 0 100px; margin-top: 76px;">
-    <div class="container text-center">
-        <h1 class="display-4 text-white mb-3" data-aos="fade-up">Request A Quote</h1>
-        <p class="lead text-white" data-aos="fade-up" data-aos-delay="100">Get a personalized quote for your project</p>
+
+<section style="min-height: 60vh; display: flex; align-items: center; margin-top: 76px; background: var(--off-white);">
+    <div class="container-narrow" style="text-align: center;">
+        <h1 class="fade-in-up" style="margin-bottom: var(--space-md);">Request Consultation</h1>
+        <p class="lead fade-in-up delay-1">
+            Share details about your project and we'll be in touch within 24 hours to schedule a discussion.
+        </p>
     </div>
 </section>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="quote-form bg-white rounded-4 p-5 shadow-lg" data-aos="fade-up">
-                    <div class="text-center mb-5">
-                        <h2 class="mb-3">Tell Us About Your Project</h2>
-                        <p class="text-muted">Fill out the form below and we'll get back to you within 24 hours</p>
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-xl); align-items: start;">
+            <!-- Form -->
+            <div>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div style="margin-bottom: var(--space-lg);">
+                        <h3 style="font-size: 1.5rem; margin-bottom: var(--space-md);">Your Information</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+                            <div>
+                                <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Full Name</label>
+                                <input type="text" name="name" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem;">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Email</label>
+                                <input type="email" name="email" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem;">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: var(--space-md);">
+                            <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Phone</label>
+                            <input type="tel" name="phone" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem;">
+                        </div>
                     </div>
-
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="row g-4">
-                            <div class="col-12">
-                                <div class="section-header mb-4">
-                                    <h5 class="mb-0" style="color: var(--primary);"><i class="fas fa-user me-2"></i>Personal Information</h5>
-                                    <hr>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Full Name *</label>
-                                <input type="text" name="name" class="form-control" required>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Email Address *</label>
-                                <input type="email" name="email" class="form-control" required>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label class="form-label">Phone Number *</label>
-                                <input type="tel" name="phone" class="form-control" required>
-                            </div>
-
-                            <div class="col-12 mt-5">
-                                <div class="section-header mb-4">
-                                    <h5 class="mb-0" style="color: var(--primary);"><i class="fas fa-clipboard-list me-2"></i>Project Details</h5>
-                                    <hr>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Service Category *</label>
-                                <select name="service_category" class="form-select" required>
-                                    <option value="">Select Category</option>
+                    
+                    <div style="margin-bottom: var(--space-lg);">
+                        <h3 style="font-size: 1.5rem; margin-bottom: var(--space-md);">Project Details</h3>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+                            <div>
+                                <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Service Category</label>
+                                <select name="service_category" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem; background: white;">
+                                    <option value="">Select service</option>
                                     {% for cat in categories %}
                                     <option value="{{ cat.id }}">{{ cat.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Project Location *</label>
-                                <input type="text" name="location" class="form-control" placeholder="City, Country" required>
+                            <div>
+                                <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Location</label>
+                                <input type="text" name="location" required placeholder="City" style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem;">
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Budget Range *</label>
-                                <select name="budget" class="form-select" required>
-                                    <option value="">Select Budget Range</option>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+                            <div>
+                                <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Budget Range</label>
+                                <select name="budget" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem; background: white;">
+                                    <option value="">Select range</option>
                                     <option value="under_5k">Under $5,000</option>
                                     <option value="5k_10k">$5,000 - $10,000</option>
                                     <option value="10k_25k">$10,000 - $25,000</option>
@@ -79,111 +73,95 @@
                                     <option value="flexible">Flexible</option>
                                 </select>
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Project Timeline *</label>
-                                <select name="timeline" class="form-select" required>
-                                    <option value="">Select Timeline</option>
-                                    <option value="asap">As soon as possible</option>
+                            <div>
+                                <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Timeline</label>
+                                <select name="timeline" required style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem; background: white;">
+                                    <option value="">Select timeline</option>
+                                    <option value="asap">Immediate</option>
                                     <option value="1-2_months">1-2 months</option>
                                     <option value="3-6_months">3-6 months</option>
                                     <option value="6+_months">6+ months</option>
                                     <option value="flexible">Flexible</option>
                                 </select>
                             </div>
-
-                            <div class="col-12">
-                                <label class="form-label">Project Description *</label>
-                                <textarea name="project_description" class="form-control" rows="6" placeholder="Tell us about your vision, space requirements, style preferences, and any specific needs..." required></textarea>
-                                <small class="text-muted">Please be as detailed as possible to help us provide an accurate quote</small>
-                            </div>
-
-                            <div class="col-12 mt-4">
-                                <div class="bg-light rounded-4 p-4">
-                                    <h6 class="mb-3">What happens next?</h6>
-                                    <div class="row g-3">
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start">
-                                                <span class="badge bg-primary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">1</span>
-                                                <div>
-                                                    <h6 class="mb-1">Review</h6>
-                                                    <small class="text-muted">We review your requirements</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start">
-                                                <span class="badge bg-primary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">2</span>
-                                                <div>
-                                                    <h6 class="mb-1">Contact</h6>
-                                                    <small class="text-muted">We reach out within 24 hours</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-flex align-items-start">
-                                                <span class="badge bg-primary rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">3</span>
-                                                <div>
-                                                    <h6 class="mb-1">Quote</h6>
-                                                    <small class="text-muted">Receive detailed proposal</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-primary-custom btn-lg px-5 w-100">
-                                    <i class="fas fa-paper-plane me-2"></i> Submit Quote Request
-                                </button>
-                                <p class="text-center text-muted mt-3 mb-0">
-                                    <small><i class="fas fa-lock me-1"></i> Your information is secure and will never be shared</small>
-                                </p>
-                            </div>
                         </div>
-                    </form>
+                        
+                        <div style="margin-bottom: var(--space-md);">
+                            <label style="display: block; font-size: 0.875rem; margin-bottom: 0.5rem; color: var(--charcoal);">Project Description</label>
+                            <textarea name="project_description" rows="6" required placeholder="Describe your requirements, objectives, and any specific considerations..." style="width: 100%; padding: 0.875rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" style="width: 100%;">Submit Request</button>
+                    
+                    <p style="font-size: 0.75rem; color: var(--warm-grey); margin-top: var(--space-md); text-align: center;">
+                        Your information will be handled confidentially. We'll contact you within 24 hours.
+                    </p>
+                </form>
+            </div>
+            
+            <!-- Sidebar -->
+            <div>
+                <div style="background: var(--off-white); padding: var(--space-lg); margin-bottom: var(--space-md);">
+                    <h4 style="margin-bottom: var(--space-md);">What Happens Next</h4>
+                    
+                    <div style="margin-bottom: var(--space-md);">
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-accent); margin-bottom: 0.5rem;">01</div>
+                        <h5 style="font-size: 1rem; margin-bottom: 0.5rem;">Initial Review</h5>
+                        <p style="font-size: 0.875rem;">We review your requirements and assess project feasibility.</p>
+                    </div>
+                    
+                    <div style="margin-bottom: var(--space-md);">
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-accent); margin-bottom: 0.5rem;">02</div>
+                        <h5 style="font-size: 1rem; margin-bottom: 0.5rem;">Consultation Call</h5>
+                        <p style="font-size: 0.875rem;">We schedule a call to discuss your vision and answer questions.</p>
+                    </div>
+                    
+                    <div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; color: var(--gold-accent); margin-bottom: 0.5rem;">03</div>
+                        <h5 style="font-size: 1rem; margin-bottom: 0.5rem;">Proposal</h5>
+                        <p style="font-size: 0.875rem;">If aligned, we prepare a detailed proposal outlining scope, timeline, and investment.</p>
+                    </div>
+                </div>
+                
+                <div style="background: var(--charcoal); color: var(--pure-white); padding: var(--space-lg);">
+                    <h4 style="color: var(--pure-white); margin-bottom: var(--space-sm);">Prefer to Call?</h4>
+                    <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-md);">
+                        Speak directly with our team during business hours.
+                    </p>
+                    <p style="font-family: var(--font-display); font-size: 1.25rem; color: var(--gold-accent); margin-bottom: 0.5rem;">+263 771 234 567</p>
+                    <p style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);">Monday - Friday, 8:00 AM - 6:00 PM</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5" style="background: var(--bg-light);">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <h3 class="mb-3">Why Choose Tilojnet Exclusive?</h3>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="feature-box text-center bg-white rounded-4 p-4 h-100 shadow-sm">
-                    <i class="fas fa-medal fa-3x mb-3" style="color: var(--primary);"></i>
-                    <h5>Award Winning</h5>
-                    <p class="text-muted mb-0">50+ industry awards and recognition</p>
-                </div>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="feature-box text-center bg-white rounded-4 p-4 h-100 shadow-sm">
-                    <i class="fas fa-users fa-3x mb-3" style="color: var(--primary);"></i>
-                    <h5>Expert Team</h5>
-                    <p class="text-muted mb-0">Experienced designers dedicated to you</p>
-                </div>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="feature-box text-center bg-white rounded-4 p-4 h-100 shadow-sm">
-                    <i class="fas fa-clock fa-3x mb-3" style="color: var(--primary);"></i>
-                    <h5>On-Time Delivery</h5>
-                    <p class="text-muted mb-0">Projects completed on schedule</p>
-                </div>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-                <div class="feature-box text-center bg-white rounded-4 p-4 h-100 shadow-sm">
-                    <i class="fas fa-shield-alt fa-3x mb-3" style="color: var(--primary);"></i>
-                    <h5>Quality Guarantee</h5>
-                    <p class="text-muted mb-0">Premium materials and craftsmanship</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<style>
+/* Form input focus states */
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--charcoal);
+}
+
+/* Form validation styles */
+input:invalid:not(:placeholder-shown),
+select:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+    border-color: #DC2626;
+}
+
+@media (max-width: 768px) {
+    section div[style*="grid-template-columns: 1.5fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    section div[style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+
 {% endblock %}

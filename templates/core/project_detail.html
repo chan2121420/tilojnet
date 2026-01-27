@@ -2,348 +2,231 @@
 {% load static %}
 
 {% block content %}
-<section style="margin-top: 76px; padding: 40px 0; background: var(--bg-light);">
+
+<section style="margin-top: 100px; padding: var(--space-md) 0; background: var(--off-white);">
     <div class="container">
-        <nav aria-label="breadcrumb" data-aos="fade-right">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Home</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'projects_list' %}">Portfolio</a></li>
-                <li class="breadcrumb-item active">{{ project.title }}</li>
-            </ol>
+        <nav style="font-size: 0.875rem; color: var(--warm-grey);">
+            <a href="{% url 'home' %}" style="color: var(--warm-grey); text-decoration: none;">Home</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <a href="{% url 'projects_list' %}" style="color: var(--warm-grey); text-decoration: none;">Portfolio</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <span style="color: var(--charcoal);">{{ project.title }}</span>
         </nav>
     </div>
 </section>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <div class="row g-5">
-            <!-- Image Gallery Section -->
-            <div class="col-lg-8">
-                <div data-aos="fade-up">
-                    <!-- Badges -->
-                    <div class="badges mb-3">
-                        {% if project.is_featured %}
-                        <span class="badge bg-warning text-dark me-2"><i class="fas fa-star me-1"></i> Featured Project</span>
-                        {% endif %}
-                        <span class="badge" style="background: var(--primary);">{{ project.status|title }}</span>
-                        {% if project.category %}
-                        <span class="badge bg-secondary">{{ project.category.name }}</span>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Title -->
-                    <h1 class="display-5 mb-3">{{ project.title }}</h1>
-                    
-                    <!-- Meta Info -->
-                    <div class="project-meta d-flex flex-wrap gap-4 mb-4 text-muted">
-                        <div><i class="fas fa-map-marker-alt me-2" style="color: var(--primary);"></i>{{ project.location }}</div>
-                        <div><i class="far fa-calendar me-2" style="color: var(--primary);"></i>{{ project.project_date|date:"F Y" }}</div>
-                        {% if project.duration %}
-                        <div><i class="far fa-clock me-2" style="color: var(--primary);"></i>{{ project.duration }}</div>
-                        {% endif %}
-                        <div><i class="far fa-eye me-2" style="color: var(--primary);"></i>{{ project.views_count }} views</div>
-                    </div>
-                </div>
-
-                <!-- Main Image with Gallery -->
-                <div class="main-image mb-4 rounded-4 overflow-hidden shadow-lg" data-aos="zoom-in">
-                    <img id="mainImage" src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-100" style="max-height: 600px; object-fit: cover;">
-                </div>
-
-                <!-- Image Gallery Thumbnails -->
-                {% if project.images.all %}
-                <div class="image-gallery-section mb-4">
-                    <h5 class="mb-3"><i class="fas fa-images me-2"></i>Project Gallery ({{ project.images.count|add:"1" }} images)</h5>
-                    <div class="gallery-thumbnails">
-                        <!-- Featured Image Thumbnail -->
-                        <div class="gallery-thumb active" onclick="changeImage('{{ project.featured_image.url }}', this)">
-                            <img src="{{ project.featured_image.url }}" alt="{{ project.title }}">
-                            <div class="thumb-overlay">
-                                <i class="fas fa-search-plus"></i>
-                            </div>
-                        </div>
-                        
-                        <!-- Gallery Images -->
-                        {% for img in project.images.all %}
-                        <div class="gallery-thumb" onclick="changeImage('{{ img.image.url }}', this)">
-                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}">
-                            <div class="thumb-overlay">
-                                <i class="fas fa-search-plus"></i>
-                            </div>
-                            {% if img.caption %}
-                            <div class="thumb-caption">{{ img.caption|truncatewords:5 }}</div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
+        <div style="max-width: 800px; margin-bottom: var(--space-lg);">
+            {% if project.is_featured %}
+            <div style="margin-bottom: var(--space-sm);">
+                <span style="background: var(--gold-accent); color: var(--charcoal); padding: 0.5rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">Featured Project</span>
+            </div>
+            {% endif %}
+            
+            <div style="margin-bottom: var(--space-sm);">
+                {% if project.category %}
+                <span style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey);">{{ project.category.name }}</span>
                 {% endif %}
+            </div>
+            
+            <h1 style="margin-bottom: var(--space-md);">{{ project.title }}</h1>
+            
+            <div style="display: flex; gap: var(--space-md); flex-wrap: wrap; font-size: 0.875rem; color: var(--warm-grey); margin-bottom: var(--space-md);">
+                <div>{{ project.location }}</div>
+                <div>{{ project.project_date|date:"Y" }}</div>
+                {% if project.duration %}
+                <div>{{ project.duration }}</div>
+                {% endif %}
+            </div>
+            
+            <p class="lead">{{ project.short_description }}</p>
+        </div>
+        
+        <!-- Main Image -->
+        <div style="margin-bottom: var(--space-md); overflow: hidden;">
+            <img id="mainImage" src="{{ project.featured_image.url }}" alt="{{ project.title }}" style="width: 100%; height: 700px; object-fit: cover;">
+        </div>
+        
+        <!-- Gallery Thumbnails -->
+        {% if project.images.all %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-sm); margin-bottom: var(--space-xl);">
+            <!-- Featured Image -->
+            <div onclick="changeImage('{{ project.featured_image.url }}', this)" style="cursor: pointer; overflow: hidden; border: 2px solid var(--charcoal); transition: var(--transition-fast);">
+                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" style="width: 100%; height: 150px; object-fit: cover;">
+            </div>
+            
+            {% for img in project.images.all %}
+            <div onclick="changeImage('{{ img.image.url }}', this)" style="cursor: pointer; overflow: hidden; border: 2px solid var(--light-grey); transition: var(--transition-fast);">
+                <img src="{{ img.image.url }}" alt="{{ img.caption|default:project.title }}" style="width: 100%; height: 150px; object-fit: cover;">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
 
-                <!-- Project Description -->
-                <div class="project-description bg-white rounded-4 p-4 shadow-sm mb-4" data-aos="fade-up">
-                    <h3 class="mb-4"><i class="fas fa-file-alt me-2" style="color: var(--primary);"></i>Project Overview</h3>
-                    <p class="text-muted lead">{{ project.short_description }}</p>
-                    <div class="content mt-4">
-                        {{ project.full_description|safe }}
-                    </div>
+<section style="background: var(--off-white); padding: var(--space-2xl) 0;">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--space-xl);">
+            <!-- Main Content -->
+            <div>
+                <h2 style="margin-bottom: var(--space-lg);">Project Overview</h2>
+                <div style="line-height: 1.8; margin-bottom: var(--space-xl);">
+                    {{ project.full_description|safe }}
                 </div>
-
-                <!-- Challenge, Solution, Result -->
+                
                 {% if project.challenge %}
-                <div class="project-section bg-gradient rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A);" data-aos="fade-up">
-                    <h4 class="mb-3"><i class="fas fa-exclamation-circle me-2" style="color: var(--primary);"></i>The Challenge</h4>
-                    <div class="content">{{ project.challenge|safe }}</div>
+                <div style="margin-bottom: var(--space-xl);">
+                    <h3 style="margin-bottom: var(--space-md);">Challenge</h3>
+                    <div style="line-height: 1.8;">{{ project.challenge|safe }}</div>
                 </div>
                 {% endif %}
-
+                
                 {% if project.solution %}
-                <div class="project-section bg-gradient rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #DBEAFE, #BFDBFE);" data-aos="fade-up">
-                    <h4 class="mb-3"><i class="fas fa-lightbulb me-2" style="color: var(--primary);"></i>Our Solution</h4>
-                    <div class="content">{{ project.solution|safe }}</div>
+                <div style="margin-bottom: var(--space-xl);">
+                    <h3 style="margin-bottom: var(--space-md);">Solution</h3>
+                    <div style="line-height: 1.8;">{{ project.solution|safe }}</div>
                 </div>
                 {% endif %}
-
+                
                 {% if project.result %}
-                <div class="project-section bg-gradient rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #D1FAE5, #A7F3D0);" data-aos="fade-up">
-                    <h4 class="mb-3"><i class="fas fa-check-circle me-2" style="color: var(--primary);"></i>The Result</h4>
-                    <div class="content">{{ project.result|safe }}</div>
+                <div>
+                    <h3 style="margin-bottom: var(--space-md);">Result</h3>
+                    <div style="line-height: 1.8;">{{ project.result|safe }}</div>
                 </div>
                 {% endif %}
             </div>
-
+            
             <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="project-sidebar sticky-top" style="top: 100px;">
-                    <!-- Project Info Card -->
-                    <div class="project-info bg-white rounded-4 p-4 shadow-sm mb-4" data-aos="fade-left">
-                        <h5 class="mb-4"><i class="fas fa-info-circle me-2"></i>Project Details</h5>
-                        
-                        {% if project.client_name %}
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-user me-2"></i>Client</strong>
-                            <p class="mb-0">{{ project.client_name }}</p>
-                        </div>
-                        {% endif %}
-                        
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-calendar me-2"></i>Completion Date</strong>
-                            <p class="mb-0">{{ project.project_date|date:"F Y" }}</p>
-                        </div>
-                        
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-map-marker-alt me-2"></i>Location</strong>
-                            <p class="mb-0">{{ project.location }}</p>
-                        </div>
-                        
-                        {% if project.service_categories.all %}
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-tags me-2"></i>Services</strong>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% for sc in project.service_categories.all %}
-                                <a href="{% url 'category_detail' sc.slug %}" class="badge bg-light text-dark border text-decoration-none">{{ sc.name }}</a>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if project.budget_range %}
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-dollar-sign me-2"></i>Budget Range</strong>
-                            <p class="mb-0">{{ project.budget_range }}</p>
-                        </div>
-                        {% endif %}
-                        
-                        {% if project.duration %}
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-clock me-2"></i>Duration</strong>
-                            <p class="mb-0">{{ project.duration }}</p>
-                        </div>
-                        {% endif %}
-                        
-                        {% if project.area_sqm %}
-                        <div class="info-item mb-3 pb-3 border-bottom">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-ruler-combined me-2"></i>Area</strong>
-                            <p class="mb-0">{{ project.area_sqm }} m²</p>
-                        </div>
-                        {% endif %}
-                        
-                        {% if project.tags %}
-                        <div class="info-item">
-                            <strong class="d-block mb-2 text-muted"><i class="fas fa-hashtag me-2"></i>Tags</strong>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% for tag in project.tags %}
-                                <span class="badge bg-secondary">{{ tag }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
+            <div>
+                <div style="background: var(--pure-white); padding: var(--space-lg); margin-bottom: var(--space-md);">
+                    <h4 style="margin-bottom: var(--space-md);">Project Details</h4>
+                    
+                    {% if project.client_name %}
+                    <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--light-grey);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Client</div>
+                        <div>{{ project.client_name }}</div>
                     </div>
-
-                    <!-- CTA Card -->
-                    <div class="cta-box bg-white rounded-4 p-4 shadow-sm mb-4" data-aos="fade-left" data-aos-delay="100">
-                        <div class="text-center mb-3">
-                            <i class="fas fa-heart fa-3x mb-3" style="color: var(--primary);"></i>
-                            <h5 class="mb-2">Love This Project?</h5>
-                            <p class="text-muted small mb-3">Get a similar design for your space</p>
-                        </div>
-                        <a href="{% url 'quote_request' %}" class="btn btn-primary-custom w-100 mb-2">
-                            <i class="fas fa-clipboard me-2"></i> Request Quote
-                        </a>
-                        <a href="{% url 'contact' %}" class="btn btn-outline-primary w-100">
-                            <i class="fas fa-comments me-2"></i> Contact Us
-                        </a>
+                    {% endif %}
+                    
+                    <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--light-grey);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Completed</div>
+                        <div>{{ project.project_date|date:"F Y" }}</div>
                     </div>
-
-                    <!-- Share Card -->
-                    <div class="share-box bg-light rounded-4 p-4" data-aos="fade-left" data-aos-delay="200">
-                        <h6 class="mb-3"><i class="fas fa-share-alt me-2"></i>Share This Project</h6>
-                        <div class="d-flex gap-2">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm btn-outline-primary flex-fill">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ project.title }}" target="_blank" class="btn btn-sm btn-outline-info flex-fill">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="https://wa.me/?text={{ project.title }} - {{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm btn-outline-success flex-fill">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                            <a href="https://pinterest.com/pin/create/button/?url={{ request.build_absolute_uri }}&media={{ project.featured_image.url }}&description={{ project.title }}" target="_blank" class="btn btn-sm btn-outline-danger flex-fill">
-                                <i class="fab fa-pinterest"></i>
-                            </a>
+                    
+                    <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--light-grey);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Location</div>
+                        <div>{{ project.location }}</div>
+                    </div>
+                    
+                    {% if project.service_categories.all %}
+                    <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--light-grey);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">Services</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            {% for sc in project.service_categories.all %}
+                            <a href="{% url 'category_detail' sc.slug %}" style="color: var(--charcoal); text-decoration: none; font-size: 0.875rem;">{{ sc.name }}</a>
+                            {% endfor %}
                         </div>
                     </div>
+                    {% endif %}
+                    
+                    {% if project.duration %}
+                    <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--light-grey);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Duration</div>
+                        <div>{{ project.duration }}</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.area_sqm %}
+                    <div>
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Area</div>
+                        <div>{{ project.area_sqm }} m²</div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div style="background: var(--charcoal); color: var(--pure-white); padding: var(--space-lg); text-align: center;">
+                    <h4 style="color: var(--pure-white); margin-bottom: var(--space-md);">Interested?</h4>
+                    <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-md);">
+                        We can create something similar for your space.
+                    </p>
+                    <a href="{% url 'quote_request' %}" class="btn-primary" style="width: 100%; background: var(--pure-white); color: var(--charcoal);">Request Consultation</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Related Projects -->
 {% if related_projects %}
-<section class="py-5" style="background: var(--bg-light);">
+<section class="section">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">MORE PROJECTS</span>
-            <h2 class="section-title d-inline-block">You May Also Like</h2>
-            <p class="text-muted mt-3">Explore more projects from our portfolio</p>
-        </div>
-        <div class="row g-4">
-            {% for rp in related_projects %}
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
-                <div class="project-card rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
-                    <img src="{{ rp.featured_image.url }}" alt="{{ rp.title }}" class="w-100 h-100 object-fit-cover">
-                    <div class="project-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: opacity 0.3s;">
-                        <div class="text-white w-100">
-                            <span class="badge bg-warning text-dark mb-2">{{ rp.category.name }}</span>
-                            <h5 class="text-white mb-2">{{ rp.title }}</h5>
-                            <p class="mb-3 small"><i class="fas fa-map-marker-alt me-1"></i>{{ rp.location }}</p>
-                            <a href="{% url 'project_detail' rp.slug %}" class="btn btn-sm btn-light">
-                                View Project <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                    </div>
+        <h2 style="margin-bottom: var(--space-lg);">Related Projects</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: var(--space-lg);">
+            {% for rp in related_projects|slice:":3" %}
+            <a href="{% url 'project_detail' rp.slug %}" style="display: block; text-decoration: none; color: inherit; position: relative; overflow: hidden; height: 400px;">
+                <img src="{{ rp.featured_image.url }}" alt="{{ rp.title }}" style="width: 100%; height: 100%; object-fit: cover; transition: var(--transition-smooth);">
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: var(--space-md); background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); color: var(--pure-white);">
+                    {% if rp.category %}
+                    <div style="font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.5rem; color: var(--gold-accent);">{{ rp.category.name }}</div>
+                    {% endif %}
+                    <h4 style="color: var(--pure-white); margin-bottom: 0.5rem;">{{ rp.title }}</h4>
+                    <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.8);">{{ rp.location }}</p>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
 
-<!-- CTA Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="cta-box rounded-4 p-5 text-center" style="background: linear-gradient(135deg, var(--primary), var(--accent));" data-aos="zoom-in">
-            <h2 class="text-white mb-4">Ready to Start Your Project?</h2>
-            <p class="text-white mb-4 lead">Let's create something amazing for your space!</p>
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="{% url 'quote_request' %}" class="btn btn-light btn-lg px-5">
-                    <i class="fas fa-clipboard me-2"></i> Get Free Quote
-                </a>
-                <a href="{% url 'projects_list' %}" class="btn btn-outline-light btn-lg px-5">
-                    <i class="fas fa-folder me-2"></i> View More Projects
-                </a>
-            </div>
+<section style="background: var(--off-white); padding: var(--space-2xl) 0;">
+    <div class="container-narrow" style="text-align: center;">
+        <h2 style="margin-bottom: var(--space-md);">Ready to Start Your Project?</h2>
+        <p class="lead" style="margin-bottom: var(--space-lg);">
+            Let's discuss how we can bring your vision to life.
+        </p>
+        <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+            <a href="{% url 'quote_request' %}" class="btn-primary">Request Consultation</a>
+            <a href="{% url 'projects_list' %}" class="btn-secondary">View More Projects</a>
         </div>
     </div>
 </section>
 
+<script>
+function changeImage(imageUrl, thumbElement) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.src = imageUrl;
+        
+        // Update active thumbnail
+        document.querySelectorAll('[onclick*="changeImage"]').forEach(thumb => {
+            thumb.style.borderColor = 'var(--light-grey)';
+        });
+        if (thumbElement) {
+            thumbElement.style.borderColor = 'var(--charcoal)';
+        }
+    }
+}
+</script>
+
 <style>
-.project-card:hover .project-overlay {
-    opacity: 1 !important;
+/* Project hover */
+section a[href*="project_detail"]:hover img {
+    transform: scale(1.1);
 }
 
-.gallery-thumb {
-    position: relative;
-    overflow: hidden;
+/* Thumbnail hover */
+div[onclick*="changeImage"]:hover {
+    border-color: var(--charcoal) !important;
 }
 
-.thumb-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.gallery-thumb:hover .thumb-overlay {
-    opacity: 1;
-}
-
-.thumb-overlay i {
-    color: white;
-    font-size: 24px;
-}
-
-.thumb-caption {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 5px;
-    font-size: 12px;
-    text-align: center;
-}
-
-.content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin: 20px 0;
-}
-
-.content p {
-    margin-bottom: 1rem;
-    line-height: 1.8;
-}
-
-.content h1, .content h2, .content h3 {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    color: var(--secondary);
-}
-
-.content ul, .content ol {
-    margin-bottom: 1rem;
-    padding-left: 2rem;
-}
-
-.content li {
-    margin-bottom: 0.5rem;
-}
-
-.info-item:last-child {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
+@media (max-width: 768px) {
+    section div[style*="grid-template-columns: 2fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
 }
 </style>
+
 {% endblock %}

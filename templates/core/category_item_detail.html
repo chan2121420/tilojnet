@@ -2,328 +2,192 @@
 {% load static %}
 
 {% block content %}
-<section style="margin-top: 76px; padding: 40px 0; background: var(--bg-light);">
+
+<section style="margin-top: 100px; padding: var(--space-md) 0; background: var(--off-white);">
     <div class="container">
-        <nav aria-label="breadcrumb" data-aos="fade-right">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Home</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'categories_list' %}">Categories</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
-                <li class="breadcrumb-item active">{{ item.name }}</li>
-            </ol>
+        <nav style="font-size: 0.875rem; color: var(--warm-grey);">
+            <a href="{% url 'home' %}" style="color: var(--warm-grey); text-decoration: none;">Home</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <a href="{% url 'categories_list' %}" style="color: var(--warm-grey); text-decoration: none;">Services</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <a href="{% url 'category_detail' category.slug %}" style="color: var(--warm-grey); text-decoration: none;">{{ category.name }}</a>
+            <span style="margin: 0 0.5rem;">/</span>
+            <span style="color: var(--charcoal);">{{ item.name }}</span>
         </nav>
     </div>
 </section>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <div class="row g-5">
-            <!-- Image Gallery Section -->
-            <div class="col-lg-7">
-                <div class="sticky-top" style="top: 100px;">
-                    <!-- Main Image -->
-                    <div class="gallery-main mb-3" data-aos="zoom-in">
-                        <img id="mainImage" src="{{ item.featured_image.url }}" alt="{{ item.name }}" class="w-100" style="height: 500px; object-fit: cover;">
-                    </div>
-                    
-                    <!-- Thumbnails -->
-                    <div class="gallery-thumbnails">
-                        <!-- Featured Image Thumbnail -->
-                        <div class="gallery-thumb active" onclick="changeImage('{{ item.featured_image.url }}', this)">
-                            <img src="{{ item.featured_image.url }}" alt="{{ item.name }}">
-                        </div>
-                        
-                        <!-- Gallery Images -->
-                        {% for img in item.gallery.all %}
-                        <div class="gallery-thumb" onclick="changeImage('{{ img.image.url }}', this)">
-                            <img src="{{ img.image.url }}" alt="{{ img.caption|default:item.name }}">
-                        </div>
-                        {% endfor %}
-                    </div>
-                    
-                    {% if not item.gallery.all %}
-                    <p class="text-muted text-center mt-3"><i class="fas fa-info-circle me-2"></i>More images coming soon</p>
-                    {% endif %}
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-xl); align-items: start;">
+            <!-- Image Gallery -->
+            <div>
+                <div style="margin-bottom: var(--space-md); overflow: hidden;">
+                    <img id="mainImage" src="{{ item.featured_image.url }}" alt="{{ item.name }}" style="width: 100%; height: 600px; object-fit: cover;">
                 </div>
+                
+                {% if item.gallery.all %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: var(--space-sm);">
+                    <!-- Featured Image Thumbnail -->
+                    <div onclick="changeImage('{{ item.featured_image.url }}', this)" style="cursor: pointer; overflow: hidden; border: 2px solid var(--light-grey); transition: var(--transition-fast);">
+                        <img src="{{ item.featured_image.url }}" alt="{{ item.name }}" style="width: 100%; height: 120px; object-fit: cover;">
+                    </div>
+                    
+                    <!-- Gallery Images -->
+                    {% for img in item.gallery.all %}
+                    <div onclick="changeImage('{{ img.image.url }}', this)" style="cursor: pointer; overflow: hidden; border: 2px solid var(--light-grey); transition: var(--transition-fast);">
+                        <img src="{{ img.image.url }}" alt="{{ img.caption|default:item.name }}" style="width: 100%; height: 120px; object-fit: cover;">
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
             
-            <!-- Product Details Section -->
-            <div class="col-lg-5">
-                <div data-aos="fade-left">
-                    <!-- Category Badge -->
-                    <a href="{% url 'category_detail' category.slug %}" class="badge bg-primary text-white mb-3 px-3 py-2 text-decoration-none">
-                        <i class="fas {{ category.icon }} me-2"></i> {{ category.name }}
-                    </a>
-                    
-                    <!-- Status Badges -->
-                    <div class="mb-3">
-                        {% if item.is_new %}
-                        <span class="badge bg-success me-2"><i class="fas fa-star me-1"></i> New Arrival</span>
-                        {% endif %}
-                        {% if item.is_popular %}
-                        <span class="badge bg-danger"><i class="fas fa-fire me-1"></i> Popular Choice</span>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Title -->
-                    <h1 class="display-5 mb-4">{{ item.name }}</h1>
-                    
-                    <!-- Short Description -->
-                    <p class="lead text-muted mb-4">{{ item.short_description }}</p>
-                    
-                    <!-- Info Cards -->
-                    <div class="row g-3 mb-4">
-                        {% if item.price_range %}
-                        <div class="col-{% if item.duration and item.ideal_space_size %}12{% else %}6{% endif %}">
-                            <div class="info-card bg-light rounded-3 p-3 text-center">
-                                <i class="fas fa-dollar-sign text-success fa-2x mb-2"></i>
-                                <p class="mb-0 small text-muted">Price Range</p>
-                                <h5 class="mb-0">{{ item.price_range }}</h5>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if item.duration %}
-                        <div class="col-{% if item.price_range and item.ideal_space_size %}12{% else %}6{% endif %}">
-                            <div class="info-card bg-light rounded-3 p-3 text-center">
-                                <i class="fas fa-clock text-primary fa-2x mb-2"></i>
-                                <p class="mb-0 small text-muted">Duration</p>
-                                <h5 class="mb-0">{{ item.duration }}</h5>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if item.ideal_space_size %}
-                        <div class="col-12">
-                            <div class="info-card bg-light rounded-3 p-3 text-center">
-                                <i class="fas fa-ruler-combined text-warning fa-2x mb-2"></i>
-                                <p class="mb-0 small text-muted">Ideal Space Size</p>
-                                <h5 class="mb-0">{{ item.ideal_space_size }}</h5>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Design Styles -->
-                    {% if item.design_styles %}
-                    <div class="mb-4">
-                        <h6 class="mb-3"><i class="fas fa-palette me-2"></i>Design Styles:</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for style in item.design_styles %}
-                            <span class="badge bg-light text-dark border px-3 py-2">{{ style }}</span>
-                            {% endfor %}
-                        </div>
+            <!-- Details Sidebar -->
+            <div style="position: sticky; top: 120px;">
+                <div style="margin-bottom: var(--space-md);">
+                    <a href="{% url 'category_detail' category.slug %}" style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); text-decoration: none;">{{ category.name }}</a>
+                </div>
+                
+                {% if item.is_popular or item.is_new %}
+                <div style="margin-bottom: var(--space-sm); display: flex; gap: 0.5rem;">
+                    {% if item.is_new %}
+                    <span style="background: var(--charcoal); color: var(--pure-white); padding: 0.5rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">New</span>
+                    {% endif %}
+                    {% if item.is_popular %}
+                    <span style="background: var(--gold-accent); color: var(--charcoal); padding: 0.5rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">Popular</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <h1 style="font-size: 2.5rem; margin-bottom: var(--space-md);">{{ item.name }}</h1>
+                
+                <p style="margin-bottom: var(--space-lg); line-height: 1.8;">{{ item.short_description }}</p>
+                
+                <!-- Specifications -->
+                <div style="border-top: 1px solid var(--light-grey); padding-top: var(--space-md); margin-bottom: var(--space-md);">
+                    {% if item.price_range %}
+                    <div style="margin-bottom: var(--space-md);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Price Range</div>
+                        <div style="font-family: var(--font-display); font-size: 1.5rem; color: var(--charcoal);">{{ item.price_range }}</div>
                     </div>
                     {% endif %}
                     
-                    <!-- Key Features -->
-                    {% if item.key_features %}
-                    <div class="mb-4">
-                        <h6 class="mb-3"><i class="fas fa-check-circle me-2"></i>Key Features:</h6>
-                        <ul class="list-unstyled">
-                            {% for feature in item.key_features %}
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> {{ feature }}</li>
-                            {% endfor %}
-                        </ul>
+                    {% if item.duration %}
+                    <div style="margin-bottom: var(--space-md);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Duration</div>
+                        <div>{{ item.duration }}</div>
                     </div>
                     {% endif %}
                     
-                    <!-- Materials Used -->
-                    {% if item.materials_used %}
-                    <div class="mb-4">
-                        <h6 class="mb-3"><i class="fas fa-cubes me-2"></i>Materials Used:</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for material in item.materials_used %}
-                            <span class="badge bg-secondary px-3 py-2">{{ material }}</span>
-                            {% endfor %}
-                        </div>
+                    {% if item.ideal_space_size %}
+                    <div style="margin-bottom: var(--space-md);">
+                        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">Ideal Space</div>
+                        <div>{{ item.ideal_space_size }}</div>
                     </div>
                     {% endif %}
-                    
-                    <!-- Action Buttons -->
-                    <div class="d-grid gap-3 mb-4">
-                        <a href="{% url 'quote_request' %}" class="btn btn-primary-custom btn-lg">
-                            <i class="fas fa-clipboard me-2"></i> Request Quote for This Design
-                        </a>
-                        <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-phone me-2"></i> Talk to Our Experts
-                        </a>
-                    </div>
-                    
-                    <!-- Share Section -->
-                    <div class="border-top pt-4">
-                        <p class="mb-2 small text-muted"><i class="fas fa-share-alt me-2"></i>Share this design:</p>
-                        <div class="d-flex gap-2">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-circle" style="width: 40px; height: 40px;">
-                                <i class="fab fa-facebook-f"></i>
-                            </a>
-                            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ item.name }}" target="_blank" class="btn btn-sm btn-outline-info rounded-circle" style="width: 40px; height: 40px;">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                            <a href="https://wa.me/?text={{ item.name }} - {{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm btn-outline-success rounded-circle" style="width: 40px; height: 40px;">
-                                <i class="fab fa-whatsapp"></i>
-                            </a>
-                            <a href="https://pinterest.com/pin/create/button/?url={{ request.build_absolute_uri }}&media={{ item.featured_image.url }}&description={{ item.name }}" target="_blank" class="btn btn-sm btn-outline-danger rounded-circle" style="width: 40px; height: 40px;">
-                                <i class="fab fa-pinterest"></i>
-                            </a>
-                        </div>
+                </div>
+                
+                {% if item.design_styles %}
+                <div style="border-top: 1px solid var(--light-grey); padding-top: var(--space-md); margin-bottom: var(--space-md);">
+                    <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">Design Styles</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                        {% for style in item.design_styles %}
+                        <span style="padding: 0.5rem 1rem; border: 1px solid var(--light-grey); font-size: 0.875rem;">{{ style }}</span>
+                        {% endfor %}
                     </div>
                 </div>
+                {% endif %}
+                
+                {% if item.key_features %}
+                <div style="border-top: 1px solid var(--light-grey); padding-top: var(--space-md); margin-bottom: var(--space-lg);">
+                    <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">Key Features</div>
+                    <ul style="list-style: none; padding: 0;">
+                        {% for feature in item.key_features %}
+                        <li style="margin-bottom: 0.5rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0; color: var(--gold-accent);">•</span>
+                            {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                <a href="{% url 'quote_request' %}" class="btn-primary" style="width: 100%; text-align: center; margin-bottom: var(--space-sm);">Request Consultation</a>
+                <a href="{% url 'contact' %}" class="btn-secondary" style="width: 100%; text-align: center;">Contact Us</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Full Description Section -->
-<section class="py-5" style="background: var(--bg-light);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="bg-white rounded-4 p-5 shadow-sm" data-aos="fade-up">
-                    <h3 class="mb-4"><i class="fas fa-info-circle me-2" style="color: var(--primary);"></i>About This Design</h3>
-                    <div class="content">
-                        {{ item.full_description|safe }}
-                    </div>
-                </div>
-            </div>
+{% if item.full_description %}
+<section style="background: var(--off-white); padding: var(--space-2xl) 0;">
+    <div class="container-narrow">
+        <h2 style="margin-bottom: var(--space-lg);">Details</h2>
+        <div style="line-height: 1.8;">
+            {{ item.full_description|safe }}
         </div>
     </div>
 </section>
+{% endif %}
 
-<!-- Related Items -->
 {% if related_items %}
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">MORE OPTIONS</span>
-            <h2 class="section-title d-inline-block">Similar {{ category.name }} Designs</h2>
-            <p class="text-muted mt-3">Explore other designs you might like</p>
-        </div>
-        <div class="row g-4">
-            {% for rel_item in related_items %}
-            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}00">
-                <div class="item-card bg-white rounded-4 overflow-hidden shadow-sm h-100 position-relative">
-                    <div class="position-absolute top-0 start-0 m-2" style="z-index: 10;">
-                        {% if rel_item.is_new %}
-                        <span class="badge bg-success mb-1 d-block"><i class="fas fa-star me-1"></i> New</span>
-                        {% endif %}
-                        {% if rel_item.is_popular %}
-                        <span class="badge bg-danger"><i class="fas fa-fire me-1"></i> Popular</span>
-                        {% endif %}
-                    </div>
-                    <div style="height: 200px; overflow: hidden;">
-                        <img src="{{ rel_item.featured_image.url }}" alt="{{ rel_item.name }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.5s;">
-                    </div>
-                    <div class="p-3">
-                        <h5 class="mb-2">{{ rel_item.name }}</h5>
-                        <p class="text-muted small mb-3">{{ rel_item.short_description|truncatewords:10 }}</p>
-                        {% if rel_item.price_range %}
-                        <p class="mb-2 small"><strong><i class="fas fa-dollar-sign text-success me-1"></i>{{ rel_item.price_range }}</strong></p>
-                        {% endif %}
-                        <a href="{% url 'category_item_detail' category.slug rel_item.slug %}" class="btn btn-sm btn-outline-primary w-100 rounded-pill">
-                            View Details <i class="fas fa-arrow-right ms-1"></i>
-                        </a>
-                    </div>
+        <h2 style="margin-bottom: var(--space-lg);">Similar Designs</h2>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-lg);">
+            {% for rel_item in related_items|slice:":3" %}
+            <a href="{% url 'category_item_detail' category.slug rel_item.slug %}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="margin-bottom: var(--space-md); overflow: hidden;">
+                    <img src="{{ rel_item.featured_image.url }}" alt="{{ rel_item.name }}" style="width: 100%; height: 300px; object-fit: cover; transition: var(--transition-smooth);">
                 </div>
-            </div>
+                <h4 style="font-size: 1.25rem; margin-bottom: var(--space-sm);">{{ rel_item.name }}</h4>
+                <p style="font-size: 0.875rem; color: var(--warm-grey);">{{ rel_item.short_description|truncatewords:15 }}</p>
+            </a>
             {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
 
-<!-- Related Projects -->
-{% if related_projects %}
-<section class="py-5" style="background: var(--bg-light);">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <span class="badge bg-warning text-dark mb-3 px-3 py-2">REAL PROJECTS</span>
-            <h2 class="section-title d-inline-block">See This Style in Action</h2>
-            <p class="text-muted mt-3">Completed {{ category.name|lower }} projects featuring similar designs</p>
-        </div>
-        <div class="row g-4">
-            {% for project in related_projects %}
-            <div class="col-md-4" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
-                <div class="project-card rounded-4 overflow-hidden shadow-lg position-relative" style="height: 300px;">
-                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-100 h-100 object-fit-cover">
-                    <div class="project-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end p-4" style="background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: opacity 0.3s;">
-                        <div class="text-white w-100">
-                            <span class="badge bg-warning text-dark mb-2">{{ project.category.name }}</span>
-                            <h5 class="text-white mb-2">{{ project.title }}</h5>
-                            <p class="mb-3 small"><i class="fas fa-map-marker-alt me-1"></i>{{ project.location }}</p>
-                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-sm btn-light">
-                                View Full Project <i class="fas fa-arrow-right ms-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-<!-- CTA Section -->
-<section class="py-5">
-    <div class="container">
-        <div class="cta-box rounded-4 p-5 text-center" style="background: linear-gradient(135deg, var(--primary), var(--accent));" data-aos="zoom-in">
-            <h2 class="text-white mb-4">Love This Design?</h2>
-            <p class="text-white mb-4 lead">Let's bring it to life in your space!</p>
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="{% url 'quote_request' %}" class="btn btn-light btn-lg px-5">
-                    <i class="fas fa-clipboard me-2"></i> Get Free Quote
-                </a>
-                <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-5">
-                    <i class="fas fa-comments me-2"></i> Schedule Consultation
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<script>
+function changeImage(imageUrl, thumbElement) {
+    const mainImage = document.getElementById('mainImage');
+    if (mainImage) {
+        mainImage.src = imageUrl;
+        
+        // Update active thumbnail
+        document.querySelectorAll('[onclick*="changeImage"]').forEach(thumb => {
+            thumb.style.borderColor = 'var(--light-grey)';
+        });
+        if (thumbElement) {
+            thumbElement.style.borderColor = 'var(--charcoal)';
+        }
+    }
+}
+</script>
 
 <style>
-.item-card:hover img {
-    transform: scale(1.1);
+/* Related items hover */
+section a[href*="category_item_detail"]:hover img {
+    transform: scale(1.05);
 }
 
-.project-card:hover .project-overlay {
-    opacity: 1 !important;
+/* Thumbnail hover */
+div[onclick*="changeImage"]:hover {
+    border-color: var(--charcoal) !important;
 }
 
-.info-card {
-    transition: transform 0.3s ease;
-}
-
-.info-card:hover {
-    transform: translateY(-5px);
-}
-
-.content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin: 20px 0;
-}
-
-.content p {
-    margin-bottom: 1rem;
-    line-height: 1.8;
-}
-
-.content h1, .content h2, .content h3 {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    color: var(--secondary);
-}
-
-.content ul, .content ol {
-    margin-bottom: 1rem;
-    padding-left: 2rem;
-}
-
-.content li {
-    margin-bottom: 0.5rem;
+@media (max-width: 768px) {
+    section div[style*="grid-template-columns: 1.2fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    div[style*="position: sticky"] {
+        position: static !important;
+    }
 }
 </style>
+
 {% endblock %}

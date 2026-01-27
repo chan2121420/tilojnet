@@ -2,120 +2,117 @@
 {% load static %}
 
 {% block content %}
-<section class="page-header" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1920'); background-size: cover; background-position: center; padding: 150px 0 100px; margin-top: 76px;">
-    <div class="container text-center">
-        <h1 class="display-4 text-white mb-3" data-aos="fade-up">Our Portfolio</h1>
-        <p class="lead text-white" data-aos="fade-up" data-aos-delay="100">Explore our stunning interior design projects</p>
+
+<section style="min-height: 60vh; display: flex; align-items: center; margin-top: 76px; background: var(--off-white);">
+    <div class="container-narrow" style="text-align: center;">
+        <h1 class="fade-in-up" style="margin-bottom: var(--space-md);">Portfolio</h1>
+        <p class="lead fade-in-up delay-1">
+            A curated selection of completed projects across residential and commercial sectors.
+        </p>
     </div>
 </section>
 
-<section class="py-4" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+<section style="background: var(--pure-white); padding: var(--space-md) 0; border-bottom: 1px solid var(--light-grey);">
     <div class="container">
-        <div class="row g-3 align-items-center">
-            <div class="col-md-6">
-                <form method="get" class="search-form">
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Search projects..." value="{{ search_query }}">
-                        <button class="btn btn-primary-custom" type="submit"><i class="fas fa-search"></i></button>
-                    </div>
-                </form>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+                <span style="font-size: 0.875rem; color: var(--warm-grey);">{{ projects.paginator.count }} Projects</span>
             </div>
-            <div class="col-md-6">
-                <select class="form-select" onchange="window.location.href='?category=' + this.value">
-                    <option value="">All Categories</option>
-                    {% for cat in categories %}
-                    <option value="{{ cat.slug }}" {% if active_category == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
-                    {% endfor %}
-                </select>
+            <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+                <a href="{% url 'projects_list' %}" style="font-size: 0.875rem; text-decoration: none; color: {% if not active_category %}var(--charcoal){% else %}var(--warm-grey){% endif %}; letter-spacing: 0.05em; text-transform: uppercase;">All</a>
+                {% for cat in categories %}
+                <a href="?category={{ cat.slug }}" style="font-size: 0.875rem; text-decoration: none; color: {% if active_category == cat.slug %}var(--charcoal){% else %}var(--warm-grey){% endif %}; letter-spacing: 0.05em; text-transform: uppercase;">{{ cat.name }}</a>
+                {% endfor %}
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <div class="row g-4">
+        {% if projects %}
+        <div style="display: grid; gap: var(--space-xl);">
             {% for project in projects %}
-            <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="{{ forloop.counter0|divisibleby:3|yesno:'0,100,200' }}">
-                <div class="project-card rounded-4 overflow-hidden shadow-lg position-relative h-100">
-                    <div class="project-image" style="height: 300px; overflow: hidden;">
-                        <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-100 h-100 object-fit-cover">
-                        {% if project.is_featured %}
-                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3">
-                            <i class="fas fa-star me-1"></i> Featured
-                        </span>
+            <a href="{% url 'project_detail' project.slug %}" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-lg); align-items: center; text-decoration: none; color: inherit; padding-bottom: var(--space-xl); border-bottom: 1px solid var(--light-grey); {% if forloop.counter|divisibleby:2 %}direction: rtl;{% endif %}">
+                <div style="overflow: hidden;">
+                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" style="width: 100%; height: 500px; object-fit: cover; transition: var(--transition-smooth);">
+                </div>
+                <div style="{% if forloop.counter|divisibleby:2 %}direction: ltr;{% endif %}">
+                    <div style="display: flex; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+                        {% if project.category %}
+                        <span style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey);">{{ project.category.name }}</span>
                         {% endif %}
-                        {% if project.status == 'ongoing' %}
-                        <span class="badge bg-primary position-absolute top-0 start-0 m-3">
-                            <i class="fas fa-spinner me-1"></i> Ongoing
-                        </span>
+                        {% if project.project_date %}
+                        <span style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey);">{{ project.project_date|date:"Y" }}</span>
                         {% endif %}
                     </div>
-                    <div class="p-4">
-                        <div class="mb-2">
-                            {% if project.category %}
-                            <span class="badge bg-light text-dark border me-2">{{ project.category.name }}</span>
-                            {% endif %}
-                            {% for sc in project.service_categories.all %}
-                            <span class="badge bg-light text-dark border">{{ sc.name }}</span>
-                            {% endfor %}
-                        </div>
-                        <h4 class="mb-2">{{ project.title }}</h4>
-                        <p class="text-muted mb-3"><i class="fas fa-map-marker-alt me-2" style="color: var(--primary);"></i>{{ project.location }}</p>
-                        <p class="text-muted mb-3">{{ project.short_description|truncatewords:20 }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted"><i class="far fa-calendar me-2"></i>{{ project.project_date|date:"M Y" }}</small>
-                            <small class="text-muted"><i class="far fa-eye me-2"></i>{{ project.views_count }} views</small>
-                        </div>
-                        <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary-custom w-100 mt-3">
-                            View Details <i class="fas fa-arrow-right ms-2"></i>
-                        </a>
-                    </div>
+                    <h2 style="font-size: 2.5rem; margin-bottom: var(--space-sm);">{{ project.title }}</h2>
+                    <p style="font-size: 0.875rem; color: var(--warm-grey); margin-bottom: var(--space-sm);">{{ project.location }}</p>
+                    <p style="margin-bottom: var(--space-md);">{{ project.short_description|truncatewords:30 }}</p>
+                    <span class="btn-text">View Project</span>
                 </div>
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle fa-2x mb-3"></i>
-                    <p class="mb-0">No projects found. Try adjusting your filters.</p>
-                </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
-
+        
+        <!-- Pagination -->
         {% if projects.has_other_pages %}
-        <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                {% if projects.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ projects.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">Previous</a>
-                </li>
-                {% endif %}
-                {% for num in projects.paginator.page_range %}
-                {% if projects.number == num %}
-                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
-                {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">{{ num }}</a></li>
-                {% endif %}
-                {% endfor %}
-                {% if projects.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ projects.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if active_category %}&category={{ active_category }}{% endif %}">Next</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
+        <div style="display: flex; justify-content: center; gap: var(--space-sm); margin-top: var(--space-xl);">
+            {% if projects.has_previous %}
+            <a href="?page={{ projects.previous_page_number }}{% if active_category %}&category={{ active_category }}{% endif %}" style="padding: 0.5rem 1rem; border: 1px solid var(--light-grey); text-decoration: none; color: var(--charcoal); font-size: 0.875rem;">Previous</a>
+            {% endif %}
+            
+            <span style="padding: 0.5rem 1rem; font-size: 0.875rem; color: var(--warm-grey);">Page {{ projects.number }} of {{ projects.paginator.num_pages }}</span>
+            
+            {% if projects.has_next %}
+            <a href="?page={{ projects.next_page_number }}{% if active_category %}&category={{ active_category }}{% endif %}" style="padding: 0.5rem 1rem; border: 1px solid var(--light-grey); text-decoration: none; color: var(--charcoal); font-size: 0.875rem;">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div style="text-align: center; padding: var(--space-xl) 0;">
+            <p class="lead" style="margin-bottom: var(--space-md);">No projects match your criteria.</p>
+            <a href="{% url 'projects_list' %}" class="btn-secondary">View All Projects</a>
+        </div>
         {% endif %}
     </div>
 </section>
 
-<section class="py-5" style="background: var(--bg-light);">
-    <div class="container">
-        <div class="cta-box rounded-4 p-5 text-center" style="background: linear-gradient(135deg, var(--primary), var(--accent));" data-aos="zoom-in">
-            <h2 class="text-white mb-4">Want Your Project Featured Here?</h2>
-            <p class="text-white mb-4 lead">Let's create your dream space together!</p>
-            <a href="{% url 'quote_request' %}" class="btn btn-light btn-lg px-5">Start Your Project</a>
-        </div>
+<!-- ============================================
+     CTA
+     ============================================ -->
+<section style="background: var(--charcoal); color: var(--pure-white); padding: var(--space-2xl) 0;">
+    <div class="container-narrow" style="text-align: center;">
+        <h2 style="color: var(--pure-white); margin-bottom: var(--space-md);">Discuss Your Project</h2>
+        <p class="lead" style="color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-lg);">
+            We'd welcome the opportunity to understand your requirements and explore how we can help.
+        </p>
+        <a href="{% url 'quote_request' %}" class="btn-primary" style="background: var(--pure-white); color: var(--charcoal);">Request Consultation</a>
     </div>
 </section>
+
+<style>
+/* Project hover effect */
+section a[href*="project_detail"]:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    section a[href*="project_detail"] {
+        grid-template-columns: 1fr !important;
+        direction: ltr !important;
+    }
+    
+    section a[href*="project_detail"] > div:first-child {
+        order: 1;
+    }
+    
+    section a[href*="project_detail"] > div:last-child {
+        order: 2;
+        direction: ltr !important;
+    }
+}
+</style>
+
 {% endblock %}

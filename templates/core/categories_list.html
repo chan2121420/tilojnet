@@ -2,114 +2,90 @@
 {% load static %}
 
 {% block content %}
-<section class="page-header" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920'); background-size: cover; background-position: center; padding: 150px 0 100px; margin-top: 76px;">
-    <div class="container text-center">
-        <h1 class="display-4 text-white mb-3" data-aos="fade-up">Our Services & Categories</h1>
-        <p class="lead text-white" data-aos="fade-up" data-aos-delay="100">Explore our comprehensive range of interior design solutions</p>
+
+<section style="min-height: 60vh; display: flex; align-items: center; margin-top: 76px; background: var(--off-white);">
+    <div class="container-narrow" style="text-align: center;">
+        <h1 class="fade-in-up" style="margin-bottom: var(--space-md);">Services</h1>
+        <p class="lead fade-in-up delay-1">
+            Comprehensive interior design solutions for residential and commercial spaces.
+        </p>
     </div>
 </section>
 
-<section class="py-4" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+<section class="section">
     <div class="container">
-        <form method="get" action="{% url 'search_categories' %}" class="row g-3">
-            <div class="col-md-10">
-                <input type="text" name="q" class="form-control form-control-lg" placeholder="Search for kitchens, ceilings, bedrooms..." required>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary-custom btn-lg w-100">
-                    <i class="fas fa-search"></i> Search
-                </button>
-            </div>
-        </form>
-    </div>
-</section>
-
-<section class="py-5">
-    <div class="container">
-        <div class="row g-4">
+        {% if categories %}
+        <div style="display: grid; gap: var(--space-xl);">
             {% for category in categories %}
-            <div class="col-lg-4 col-md-6" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
-                <div class="category-card h-100 rounded-4 overflow-hidden shadow-lg position-relative" style="transition: transform 0.3s ease;">
-                    <div class="category-image" style="height: 300px; overflow: hidden;">
-                        <img src="{{ category.featured_image.url }}" alt="{{ category.name }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.5s;">
-                    </div>
-                    <div class="category-overlay position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);">
-                        <div class="position-absolute bottom-0 start-0 w-100 p-4 text-white">
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="category-icon bg-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                    <i class="fas {{ category.icon }} fa-2x" style="color: var(--primary);"></i>
-                                </div>
-                                <span class="badge bg-warning text-dark px-3 py-2">{{ category.item_count }} Item{{ category.item_count|pluralize }}</span>
-                            </div>
-                            <h3 class="text-white mb-2">{{ category.name }}</h3>
-                            <p class="text-white-50 mb-3">{{ category.description|truncatewords:15 }}</p>
-                            <a href="{% url 'category_detail' category.slug %}" class="btn btn-light rounded-pill">Explore {{ category.name }} <i class="fas fa-arrow-right ms-2"></i></a>
-                        </div>
-                    </div>
+            <a href="{% url 'category_detail' category.slug %}" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: var(--space-lg); align-items: center; text-decoration: none; color: inherit; padding-bottom: var(--space-xl); border-bottom: 1px solid var(--light-grey); {% if forloop.counter|divisibleby:2 %}direction: rtl;{% endif %}">
+                <div style="overflow: hidden;">
+                    <img src="{{ category.featured_image.url }}" alt="{{ category.name }}" style="width: 100%; height: 400px; object-fit: cover; transition: var(--transition-smooth);">
                 </div>
-            </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-info-circle fa-2x mb-3"></i>
-                    <p class="mb-0">No categories available at the moment. Please check back later!</p>
+                <div style="{% if forloop.counter|divisibleby:2 %}direction: ltr;{% endif %}">
+                    <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">{{ category.item_count }} Design Option{{ category.item_count|pluralize }}</div>
+                    <h2 style="font-size: 2.5rem; margin-bottom: var(--space-md);">{{ category.name }}</h2>
+                    <p style="margin-bottom: var(--space-md); line-height: 1.8;">{{ category.description }}</p>
+                    <span class="btn-text">Explore {{ category.name }}</span>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
+        {% else %}
+        <div style="text-align: center; padding: var(--space-xl) 0;">
+            <p class="lead" style="margin-bottom: var(--space-md);">Services will be available soon.</p>
+            <a href="{% url 'home' %}" class="btn-secondary">Return Home</a>
+        </div>
+        {% endif %}
     </div>
 </section>
 
-<section class="py-5" style="background: linear-gradient(135deg, var(--secondary), var(--text-dark));">
-    <div class="container">
-        <div class="row g-4 text-center text-white">
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="100">
-                <div class="stat-item">
-                    <i class="fas fa-th-large fa-3x mb-3" style="color: var(--accent);"></i>
-                    <h2 class="display-4 fw-bold mb-0">{{ categories.count }}</h2>
-                    <p class="text-white-50">Categories</p>
-                </div>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-                <div class="stat-item">
-                    <i class="fas fa-clipboard-list fa-3x mb-3" style="color: var(--accent);"></i>
-                    <h2 class="display-4 fw-bold mb-0">{% for cat in categories %}{{ cat.item_count|add:0 }}{% if not forloop.last %}+{% endif %}{% endfor %}</h2>
-                    <p class="text-white-50">Design Options</p>
-                </div>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
-                <div class="stat-item">
-                    <i class="fas fa-project-diagram fa-3x mb-3" style="color: var(--accent);"></i>
-                    <h2 class="display-4 fw-bold mb-0">{% for cat in categories %}{{ cat.project_count|add:0 }}{% if not forloop.last %}+{% endif %}{% endfor %}</h2>
-                    <p class="text-white-50">Completed Projects</p>
-                </div>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-                <div class="stat-item">
-                    <i class="fas fa-smile fa-3x mb-3" style="color: var(--accent);"></i>
-                    <h2 class="display-4 fw-bold mb-0">100%</h2>
-                    <p class="text-white-50">Satisfaction</p>
-                </div>
-            </div>
-        </div>
+<!-- ============================================
+     PROCESS OVERVIEW
+     ============================================ -->
+<section style="background: var(--charcoal); color: var(--pure-white); padding: var(--space-2xl) 0;">
+    <div class="container-narrow" style="text-align: center;">
+        <h2 style="color: var(--pure-white); margin-bottom: var(--space-md);">Our Approach</h2>
+        <p class="lead" style="color: rgba(255, 255, 255, 0.8); margin-bottom: var(--space-lg);">
+            Every project follows a structured process designed to deliver exceptional results within agreed timelines and budgets.
+        </p>
+        <a href="{% url 'about' %}" class="btn-primary" style="background: var(--pure-white); color: var(--charcoal);">Learn About Our Process</a>
     </div>
 </section>
 
-<section class="py-5">
-    <div class="container">
-        <div class="cta-box rounded-4 p-5 text-center" style="background: linear-gradient(135deg, var(--primary), var(--accent));" data-aos="zoom-in">
-            <h2 class="text-white mb-4">Need Help Choosing?</h2>
-            <p class="text-white mb-4 lead">Our expert team is ready to guide you through your interior design journey</p>
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="{% url 'quote_request' %}" class="btn btn-light btn-lg px-5"><i class="fas fa-file-alt me-2"></i> Get Free Quote</a>
-                <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-5"><i class="fas fa-phone me-2"></i> Contact Us</a>
-            </div>
-        </div>
+<!-- ============================================
+     CTA
+     ============================================ -->
+<section class="section">
+    <div class="container-narrow" style="text-align: center;">
+        <h2 style="margin-bottom: var(--space-md);">Ready to Begin?</h2>
+        <p class="lead" style="margin-bottom: var(--space-lg);">
+            Schedule a consultation to discuss your specific requirements.
+        </p>
+        <a href="{% url 'quote_request' %}" class="btn-primary">Request Consultation</a>
     </div>
 </section>
 
 <style>
-.category-card:hover { transform: translateY(-10px); }
-.category-card:hover .category-image img { transform: scale(1.1); }
+/* Category hover effect */
+section a[href*="category_detail"]:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    section a[href*="category_detail"] {
+        grid-template-columns: 1fr !important;
+        direction: ltr !important;
+    }
+    
+    section a[href*="category_detail"] > div:first-child {
+        order: 1;
+    }
+    
+    section a[href*="category_detail"] > div:last-child {
+        order: 2;
+        direction: ltr !important;
+    }
+}
 </style>
+
 {% endblock %}

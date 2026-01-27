@@ -2,113 +2,123 @@
 {% load static %}
 
 {% block content %}
-<section class="page-header" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=1920'); background-size: cover; background-position: center; padding: 150px 0 100px; margin-top: 76px;">
-    <div class="container text-center">
-        <h1 class="display-4 text-white mb-3" data-aos="fade-up">Search Results</h1>
-        <p class="lead text-white" data-aos="fade-up" data-aos-delay="100">Showing results for "{{ query }}"</p>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<section style="min-height: 50vh; display: flex; align-items: center; margin-top: 76px; background: var(--off-white);">
+    <div class="container-narrow" style="text-align: center;">
+        <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">Search Results</div>
+        <h1 class="fade-in-up" style="margin-bottom: var(--space-md);">"{{ query }}"</h1>
+        <p class="lead fade-in-up delay-1">
+            Found {{ total_results }} result{{ total_results|pluralize }}
+        </p>
     </div>
 </section>
 
-<section class="py-4" style="background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+<!-- ============================================
+     SEARCH BAR
+     ============================================ -->
+<section style="background: var(--pure-white); padding: var(--space-md) 0; border-bottom: 1px solid var(--light-grey);">
     <div class="container">
-        <form method="get" class="search-form">
-            <div class="row g-3">
-                <div class="col-md-10">
-                    <input type="text" name="q" class="form-control form-control-lg" placeholder="Search categories and items..." value="{{ query }}" required>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary-custom btn-lg w-100">
-                        <i class="fas fa-search"></i> Search
-                    </button>
-                </div>
+        <form method="get" action="{% url 'search_categories' %}">
+            <div style="display: flex; gap: var(--space-sm);">
+                <input type="text" name="q" value="{{ query }}" placeholder="Search categories and items..." required style="flex: 1; padding: 1rem; border: 1px solid var(--light-grey); font-family: var(--font-body); font-size: 1rem;">
+                <button type="submit" class="btn-primary">Search</button>
             </div>
         </form>
     </div>
 </section>
 
-<section class="py-5">
+<!-- ============================================
+     RESULTS
+     ============================================ -->
+<section class="section">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="mb-0">Found {{ total_results }} result{{ total_results|pluralize }}</h4>
-        </div>
-
-        {% if categories %}
-        <div class="mb-5">
-            <h5 class="mb-4"><i class="fas fa-th-large me-2" style="color: var(--primary);"></i>Categories ({{ categories.count }})</h5>
-            <div class="row g-4">
-                {% for category in categories %}
-                <div class="col-lg-4 col-md-6" data-aos="fade-up">
-                    <div class="category-card bg-white rounded-4 overflow-hidden shadow-sm h-100">
-                        <div class="category-image" style="height: 200px; overflow: hidden;">
-                            <img src="{{ category.featured_image.url }}" alt="{{ category.name }}" class="w-100 h-100 object-fit-cover">
+        {% if categories or items %}
+            
+            <!-- Categories -->
+            {% if categories %}
+            <div style="margin-bottom: var(--space-2xl);">
+                <h2 style="margin-bottom: var(--space-lg);">Services ({{ categories.count }})</h2>
+                
+                <div style="display: grid; gap: var(--space-xl);">
+                    {% for category in categories %}
+                    <a href="{% url 'category_detail' category.slug %}" style="display: grid; grid-template-columns: 350px 1fr; gap: var(--space-lg); align-items: center; text-decoration: none; color: inherit; padding-bottom: var(--space-lg); border-bottom: 1px solid var(--light-grey);">
+                        <div style="overflow: hidden;">
+                            <img src="{{ category.featured_image.url }}" alt="{{ category.name }}" style="width: 100%; height: 250px; object-fit: cover; transition: var(--transition-smooth);">
                         </div>
-                        <div class="p-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="category-icon bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                    <i class="fas {{ category.icon }}" style="color: var(--primary);"></i>
-                                </div>
-                                <h5 class="mb-0">{{ category.name }}</h5>
-                            </div>
-                            <p class="text-muted mb-3">{{ category.description|truncatewords:15 }}</p>
-                            <a href="{% url 'category_detail' category.slug %}" class="btn btn-outline-primary rounded-pill w-100">
-                                Explore <i class="fas fa-arrow-right ms-2"></i>
-                            </a>
+                        <div>
+                            <div style="font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: var(--space-sm);">{{ category.item_count }} Design Option{{ category.item_count|pluralize }}</div>
+                            <h3 style="font-size: 2rem; margin-bottom: var(--space-sm);">{{ category.name }}</h3>
+                            <p style="margin-bottom: var(--space-md);">{{ category.description|truncatewords:25 }}</p>
+                            <span class="btn-text">Explore {{ category.name }}</span>
                         </div>
-                    </div>
+                    </a>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
-
-        {% if items %}
-        <div>
-            <h5 class="mb-4"><i class="fas fa-paint-brush me-2" style="color: var(--primary);"></i>Design Items ({{ items.count }})</h5>
-            <div class="row g-4">
-                {% for item in items %}
-                <div class="col-lg-4 col-md-6" data-aos="fade-up">
-                    <div class="item-card bg-white rounded-4 overflow-hidden shadow-sm h-100">
-                        <div class="position-relative">
-                            <img src="{{ item.featured_image.url }}" alt="{{ item.name }}" class="w-100" style="height: 250px; object-fit: cover;">
-                            {% if item.is_popular %}
-                            <span class="badge bg-danger position-absolute top-0 end-0 m-3">
-                                <i class="fas fa-fire me-1"></i> Popular
-                            </span>
-                            {% endif %}
-                            {% if item.is_new %}
-                            <span class="badge bg-success position-absolute top-0 start-0 m-3">
-                                <i class="fas fa-star me-1"></i> New
-                            </span>
-                            {% endif %}
-                        </div>
-                        <div class="p-4">
-                            <div class="mb-2">
-                                <span class="badge bg-light text-dark border">{{ item.category.name }}</span>
+            {% endif %}
+            
+            <!-- Items -->
+            {% if items %}
+            <div>
+                <h2 style="margin-bottom: var(--space-lg);">Design Options ({{ items.count }})</h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-lg);">
+                    {% for item in items %}
+                    <a href="{% url 'category_item_detail' item.category.slug item.slug %}" style="text-decoration: none; color: inherit; display: block;">
+                        <div style="margin-bottom: var(--space-md); overflow: hidden; position: relative;">
+                            <img src="{{ item.featured_image.url }}" alt="{{ item.name }}" style="width: 100%; height: 350px; object-fit: cover; transition: var(--transition-smooth);">
+                            {% if item.is_popular or item.is_new %}
+                            <div style="position: absolute; top: var(--space-sm); right: var(--space-sm);">
+                                {% if item.is_new %}
+                                <span style="background: var(--charcoal); color: var(--pure-white); padding: 0.5rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 0.5rem;">New</span>
+                                {% endif %}
+                                {% if item.is_popular %}
+                                <span style="background: var(--gold-accent); color: var(--charcoal); padding: 0.5rem 1rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; display: block;">Popular</span>
+                                {% endif %}
                             </div>
-                            <h5 class="mb-3">{{ item.name }}</h5>
-                            <p class="text-muted mb-3">{{ item.short_description|truncatewords:15 }}</p>
-                            {% if item.price_range %}
-                            <p class="mb-2"><strong>Price:</strong> {{ item.price_range }}</p>
                             {% endif %}
-                            <a href="{% url 'category_item_detail' item.category.slug item.slug %}" class="btn btn-primary-custom w-100 rounded-pill">
-                                View Details <i class="fas fa-arrow-right ms-2"></i>
-                            </a>
                         </div>
-                    </div>
+                        <div style="font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--warm-grey); margin-bottom: 0.5rem;">{{ item.category.name }}</div>
+                        <h4 style="font-size: 1.25rem; margin-bottom: var(--space-sm);">{{ item.name }}</h4>
+                        <p style="font-size: 0.875rem; color: var(--warm-grey);">{{ item.short_description|truncatewords:15 }}</p>
+                    </a>
+                    {% endfor %}
                 </div>
-                {% endfor %}
             </div>
-        </div>
-        {% endif %}
-
-        {% if not categories and not items %}
-        <div class="text-center py-5">
-            <i class="fas fa-search fa-5x mb-4 text-muted"></i>
-            <h3 class="mb-3">No Results Found</h3>
-            <p class="text-muted mb-4">We couldn't find anything matching "{{ query }}". Try different keywords or browse our categories.</p>
-            <a href="{% url 'categories_list' %}" class="btn btn-primary-custom btn-lg">Browse All Categories</a>
-        </div>
+            {% endif %}
+            
+        {% else %}
+            <!-- No Results -->
+            <div style="text-align: center; padding: var(--space-2xl) 0;">
+                <h3 style="margin-bottom: var(--space-md);">No Results Found</h3>
+                <p class="lead" style="margin-bottom: var(--space-lg);">
+                    We couldn't find anything matching "{{ query }}". Try different keywords or browse our services.
+                </p>
+                <a href="{% url 'categories_list' %}" class="btn-primary">Browse Services</a>
+            </div>
         {% endif %}
     </div>
 </section>
+
+<style>
+/* Hover effects */
+section a[href*="category_detail"]:hover img,
+section a[href*="category_item_detail"]:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    section a[href*="category_detail"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    section div[style*="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+</style>
+
 {% endblock %}
