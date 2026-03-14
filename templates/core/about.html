@@ -3,10 +3,13 @@
 
 {% block content %}
 
-<section style="min-height: 60vh; display: flex; align-items: center; margin-top: 76px; background: var(--off-white);">
-    <div class="container-narrow" style="text-align: center;">
-        <h1 class="fade-in-up" style="margin-bottom: var(--space-md);">About Tilojnet</h1>
-        <p class="lead fade-in-up delay-1" style="max-width: 700px; margin: 0 auto;">
+<section style="min-height: 60vh; display: flex; align-items: center; margin-top: 76px; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;">
+        <img src="https://images.unsplash.com/photo-1600210492493-0946911123ea?w=1920&q=80" alt="About Tilojnet" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);">
+    </div>
+    <div class="container-narrow" style="text-align: center; position: relative; z-index: 1;">
+        <h1 class="fade-in-up" style="margin-bottom: var(--space-md); color: var(--pure-white);">About Tilojnet</h1>
+        <p class="lead fade-in-up delay-1" style="max-width: 700px; margin: 0 auto; color: rgba(255,255,255,0.9);">
             We are a team of interior design specialists committed to creating environments that balance aesthetic excellence with functional precision.
         </p>
     </div>
